@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AURA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>body{background:#101419;color:#e8edf2;font-family:ui-sans-serif,system-ui,sans-serif} .glass{background:#171d24;border:1px solid #2b3540} pre{overflow:auto;background:#0b0f13;padding:1rem;border-radius:.5rem} code{font-family:ui-monospace,SFMono-Regular,monospace}</style>
+</head>
+<body class="min-h-screen">
+  <main class="mx-auto flex min-h-screen max-w-5xl flex-col px-4 py-6 sm:px-8">
+    <header class="mb-6 flex items-center justify-between border-b border-slate-700 pb-4"><div><p class="text-xs uppercase tracking-[.3em] text-cyan-400">Local assistant</p><h1 class="text-3xl font-semibold">AURA</h1></div><span id="status" class="rounded-full border border-emerald-700 px-3 py-1 text-xs text-emerald-300">ready</span></header>
+    <section id="messages" class="glass flex-1 space-y-5 rounded-xl p-4 sm:p-6"><div class="text-slate-400">Ask AURA to inspect a project, write code, or explain a command.</div></section>
+    <form id="chat" class="mt-4 flex gap-2"><textarea id="input" rows="2" required placeholder="Describe a task..." class="min-w-0 flex-1 resize-y rounded-lg border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-cyan-400"></textarea><button class="self-end rounded-lg bg-cyan-500 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300">Send</button></form>
+  </main>
+<script>
+const form=document.querySelector('#chat'), input=document.querySelector('#input'), messages=document.querySelector('#messages'), status=document.querySelector('#status');
+function add(role,text){const box=document.createElement('article');box.className='border-b border-slate-800 pb-4 last:border-0';box.innerHTML=`<div class="mb-2 text-xs uppercase tracking-widest ${role==='user'?'text-cyan-400':'text-amber-300'}">${role}</div><div class="prose prose-invert max-w-none">${role==='assistant'?marked.parse(text):text.replaceAll('<','&lt;')}</div>`;messages.append(box);box.scrollIntoView({behavior:'smooth'});}
+form.addEventListener('submit',async e=>{e.preventDefault();const text=input.value.trim();if(!text)return;input.value='';add('user',text);status.textContent='thinking';try{const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,session_id:'web'})});const data=await res.json();add('assistant',data.response+(data.executions?.length?'\n\n'+data.executions.map(x=>'```\n'+x.command+'\n'+x.output+'\n```').join('\n'):''));status.textContent='ready';}catch(err){add('assistant','Request failed: '+err);status.textContent='offline';}});
+</script>
+</body>
+</html>

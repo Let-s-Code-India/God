@@ -5,6 +5,7 @@ from .decorators import heal
 from .ghost import GhostExecutionError, do
 from .llm import LLMClient, LLMError, LLMResponse
 from .system import SystemSnapshot, system
+from . import aura
 
 
 class _GodFacade:
@@ -32,4 +33,4 @@ __all__ = [
     "do",
     "system",
 ]
-__version__ = "0.1.0"
+__version__ = "1.0.0"

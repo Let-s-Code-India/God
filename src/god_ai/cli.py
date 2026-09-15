@@ -18,9 +18,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(prog="god", description="God AI cross-platform terminal assistant")
     parser.add_argument("prompt", nargs="*", help="Task for the assistant")
     parser.add_argument("--web", action="store_true", help="Start the localhost web UI")
+    parser.add_argument("--free", action="store_true", help="Use OpenRouter free-tier routing")
     args = parser.parse_args(argv)
     try:
-        config = configure()
+        config = configure(free_only=args.free)
     except ValueError as exc:
         parser.error(str(exc))
     if args.web:

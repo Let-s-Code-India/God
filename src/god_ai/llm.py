@@ -23,6 +23,7 @@ class LLMResponse:
 
 class LLMClient:
     defaults = {
+        "openrouter": "https://openrouter.ai/api/v1",
         "openai": "https://api.openai.com/v1",
         "groq": "https://api.groq.com/openai/v1",
         "local": "http://localhost:11434/v1",
@@ -34,7 +35,7 @@ class LLMClient:
         self.config = (config or get_config()).normalized()
 
     def chat(self, messages: list[dict[str, str]], system: str = "") -> LLMResponse:
-        if self.config.provider in {"openai", "local", "groq"}:
+        if self.config.provider in {"openai", "local", "groq", "openrouter"}:
             return self._openai(messages, system)
         if self.config.provider == "gemini":
             return self._gemini(messages, system)
@@ -63,7 +64,10 @@ class LLMClient:
         headers = {"Content-Type": "application/json"}
         if self.config.api_key:
             headers["Authorization"] = f"Bearer {self.config.api_key}"
-        data = self._request(f"{self._base()}/chat/completions", {"model": self.config.model, "messages": prompt}, headers)
+        model = self.config.model
+        if self.config.provider == "openrouter" and self.config.free_only and not model.endswith(":free") and model != "openrouter/auto":
+            model += ":free"
+        data = self._request(f"{self._base()}/chat/completions", {"model": model, "messages": prompt}, headers)
         try:
             return LLMResponse(data["choices"][0]["message"]["content"], data)
         except (KeyError, IndexError, TypeError) as exc:

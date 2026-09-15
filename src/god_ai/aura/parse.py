@@ -14,13 +14,22 @@ T = TypeVar("T")
 
 def parse(text: str, model: Optional[Type[T]] = None) -> Union[T, dict[str, Any], list[Any]]:
     """Parse natural language into JSON or validate it against a Pydantic model."""
-    response = LLMClient().chat([{"role": "user", "content": f"Return only valid JSON for this text:\n{text}"}], "You are a strict JSON parser.").text.strip()
+    client = LLMClient()
+    response = client.chat([{"role": "user", "content": f"Return only valid JSON for this text:\n{text}"}], "You are a strict JSON parser.").text.strip()
+    return _decode(response, model, client, text)
+
+
+def _decode(response: str, model: Optional[Type[T]], client: LLMClient, original: str) -> Union[T, dict[str, Any], list[Any]]:
     if response.startswith("```"):
         response = response.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
     try:
         data = json.loads(response)
     except json.JSONDecodeError as exc:
-        raise ValueError(f"Model returned invalid JSON: {exc}") from exc
+        repaired = client.chat([{"role": "user", "content": f"Repair this into valid JSON only. Original text: {original}\nMalformed response: {response}\nError: {exc}"}], "Return valid JSON and nothing else.").text.strip()
+        try:
+            data = json.loads(repaired.strip("` \n"))
+        except json.JSONDecodeError as repair_error:
+            raise ValueError(f"Model returned invalid JSON after repair: {repair_error}") from repair_error
     if model is None:
         return data
     if issubclass(model, BaseModel):

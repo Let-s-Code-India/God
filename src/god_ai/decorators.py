@@ -5,6 +5,7 @@ from __future__ import annotations
 import functools
 import inspect
 import logging
+import sys
 import traceback
 from collections.abc import Callable
 from typing import Any, TypeVar, cast
@@ -30,7 +31,9 @@ def heal(function: F) -> F:
         except Exception as original:
             config = get_config()
             source = _source(function)
-            prompt = f"Diagnose this Python failure and suggest a minimal fix.\nFunction:\n{source}\nTraceback:\n{traceback.format_exc()}"
+            arguments = {"args": repr(args), "kwargs": repr(kwargs)}
+            locals_snapshot = _traceback_locals(sys.exc_info()[2])
+            prompt = f"Diagnose this Python failure and suggest a minimal fix.\nFunction:\n{source}\nArguments:\n{arguments}\nLocals:\n{locals_snapshot}\nTraceback:\n{traceback.format_exc()}"
             try:
                 diagnosis = LLMClient(config).chat([{"role": "user", "content": prompt}], "You are a precise Python debugging assistant.").text
                 logger.error("%s failed. Model diagnosis:\n%s", function.__qualname__, diagnosis)
@@ -51,3 +54,12 @@ def _source(function: Callable[..., Any]) -> str:
         return inspect.getsource(function)
     except (OSError, TypeError):
         return f"Source unavailable for {function.__qualname__}"
+
+
+def _traceback_locals(traceback_object: Any) -> dict[str, str]:
+    values: dict[str, str] = {}
+    while traceback_object is not None:
+        for name, value in traceback_object.tb_frame.f_locals.items():
+            values[name] = repr(value)[:500]
+        traceback_object = traceback_object.tb_next
+    return values

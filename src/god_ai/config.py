@@ -31,7 +31,12 @@ class GodConfig:
         model = self.model
         if provider == "local" and model == "openrouter/auto":
             model = "llama3"
-        return replace(self, provider=provider, model=model, base_url=self.base_url.strip().rstrip("/"))
+        base_url = self.base_url.strip().rstrip("/")
+        if provider == "local" and (not base_url or "openrouter.ai" in base_url):
+            base_url = "http://localhost:11434/v1"
+        if provider == "openrouter" and not base_url:
+            base_url = "https://openrouter.ai/api/v1"
+        return replace(self, provider=provider, model=model, base_url=base_url)
 
     def validate(self) -> list[str]:
         valid = {"openai", "openrouter", "gemini", "anthropic", "groq", "local"}

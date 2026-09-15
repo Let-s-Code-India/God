@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -35,6 +36,18 @@ class LLMClient:
         self.config = (config or get_config()).normalized()
 
     def chat(self, messages: list[dict[str, str]], system: str = "") -> LLMResponse:
+        try:
+            return self._chat_once(messages, system)
+        except LLMError as primary:
+            fallback = self._fallback_client()
+            if fallback is None:
+                raise
+            try:
+                return fallback._chat_once(messages, system)
+            except LLMError as secondary:
+                raise LLMError(f"Primary provider failed: {primary}; fallback failed: {secondary}") from secondary
+
+    def _chat_once(self, messages: list[dict[str, str]], system: str) -> LLMResponse:
         if self.config.provider in {"openai", "local", "groq", "openrouter"}:
             return self._openai(messages, system)
         if self.config.provider == "gemini":
@@ -43,18 +56,33 @@ class LLMClient:
             return self._anthropic(messages, system)
         raise LLMError(f"Unsupported provider: {self.config.provider}")
 
+    def _fallback_client(self) -> Optional["LLMClient"]:
+        if self.config.provider == "local":
+            return None
+        if self.config.api_key:
+            return LLMClient(GodConfig(provider="openrouter", api_key=self.config.api_key, model="openrouter/auto", free_only=self.config.free_only, request_timeout=self.config.request_timeout))
+        return LLMClient(GodConfig(provider="local", model="llama3", base_url="http://localhost:11434/v1", request_timeout=self.config.request_timeout))
+
     def _request(self, url: str, payload: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
-        request = urllib.request.Request(url, json.dumps(payload).encode(), headers=headers, method="POST")
-        try:
-            with urllib.request.urlopen(request, timeout=self.config.request_timeout) as response:
-                return json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace").strip()
-            raise LLMError(f"Provider returned HTTP {exc.code}: {detail or exc.reason}") from exc
-        except (urllib.error.URLError, TimeoutError) as exc:
-            raise LLMError(f"Provider request failed: {exc}") from exc
-        except json.JSONDecodeError as exc:
-            raise LLMError("Provider returned invalid JSON") from exc
+        for attempt in range(3):
+            request = urllib.request.Request(url, json.dumps(payload).encode(), headers=headers, method="POST")
+            try:
+                with urllib.request.urlopen(request, timeout=self.config.request_timeout) as response:
+                    return json.loads(response.read().decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode("utf-8", errors="replace").strip()
+                if exc.code in {429, 500, 502, 503, 504} and attempt < 2:
+                    time.sleep(2 ** attempt)
+                    continue
+                raise LLMError(f"Provider returned HTTP {exc.code}: {detail or exc.reason}") from exc
+            except (urllib.error.URLError, TimeoutError) as exc:
+                if attempt < 2:
+                    time.sleep(2 ** attempt)
+                    continue
+                raise LLMError(f"Provider request failed: {exc}") from exc
+            except json.JSONDecodeError as exc:
+                raise LLMError("Provider returned invalid JSON") from exc
+        raise LLMError("Provider request failed after retries")
 
     def _base(self) -> str:
         return (self.config.base_url or self.defaults[self.config.provider]).rstrip("/")
@@ -65,7 +93,7 @@ class LLMClient:
         if self.config.api_key:
             headers["Authorization"] = f"Bearer {self.config.api_key}"
         model = self.config.model
-        if self.config.provider == "openrouter" and self.config.free_only and not model.endswith(":free") and model != "openrouter/auto":
+        if self.config.provider == "openrouter" and self.config.free_only and not model.endswith(":free"):
             model += ":free"
         data = self._request(f"{self._base()}/chat/completions", {"model": model, "messages": prompt}, headers)
         try:

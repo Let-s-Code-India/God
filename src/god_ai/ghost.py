@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import signal
 import re
 from typing import Any, Optional
 
@@ -43,10 +44,24 @@ def do(instruction: str, context: Optional[dict[str, Any]] = None) -> Any:
         if isinstance(node, ast.Attribute) and node.attr in _BLOCKED:
             raise GhostExecutionError(f"Ghost code uses blocked attribute: {node.attr}")
     namespace = {"__builtins__": {"len": len, "str": str, "int": int, "float": float, "bool": bool, "list": list, "dict": dict, "sum": sum, "min": min, "max": max, "sorted": sorted, "range": range}, **(context or {})}
+    previous_alarm = signal.getsignal(signal.SIGALRM) if hasattr(signal, "SIGALRM") else None
     try:
+        if hasattr(signal, "SIGALRM"):
+            signal.signal(signal.SIGALRM, _timeout)
+            signal.alarm(get_config().ghost_timeout)
         exec(compile(tree, "<god_ai_ghost>", "exec"), namespace, namespace)
+    except TimeoutError as exc:
+        raise GhostExecutionError("Ghost code exceeded its execution time limit") from exc
     except Exception as exc:
         raise GhostExecutionError(f"Ghost code failed: {exc}") from exc
+    finally:
+        if hasattr(signal, "SIGALRM"):
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, previous_alarm)
     if "result" not in namespace:
         raise GhostExecutionError("Generated code must assign a value to `result`")
     return namespace["result"]
+
+
+def _timeout(signum: int, frame: Any) -> None:
+    raise TimeoutError()

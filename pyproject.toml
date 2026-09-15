@@ -34,6 +34,9 @@ classifiers = [
 Homepage = "https://github.com/ayushgiriai21-cmd/God"
 Repository = "https://github.com/ayushgiriai21-cmd/God"
 
+[project.optional-dependencies]
+examples = ["numpy>=1.24", "torch>=2.0", "fastapi>=0.110", "requests>=2.31", "pytest>=7.0"]
+
 [project.scripts]
 god = "god_ai.cli:main"
 aura = "god_ai.cli:main"

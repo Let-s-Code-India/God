@@ -1,6 +1,4 @@
-"""Optional Termux:API speech helpers; silently unavailable elsewhere."""
-
-from __future__ import annotations
+"""Optional Termux API helpers."""
 
 import shutil
 import subprocess

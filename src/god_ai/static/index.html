@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>God AI</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:52rem;margin:2rem auto;padding:0 1rem;background:#101419;color:#edf2f7}main{display:grid;gap:1rem}#messages{min-height:20rem;padding:1rem;border:1px solid #334155;border-radius:.75rem}textarea{width:100%;box-sizing:border-box;background:#17202a;color:inherit;border:1px solid #475569;border-radius:.5rem;padding:.75rem}button{padding:.7rem 1rem;border:0;border-radius:.5rem;background:#22d3ee;color:#082f49;font-weight:700}</style>
+</head>
+<body><main><h1>God AI</h1><div id="messages">Ready.</div><form id="chat"><textarea id="input" rows="3" required placeholder="Ask God AI..."></textarea><button>Send</button></form></main>
+<script>const form=document.querySelector('#chat'),input=document.querySelector('#input'),messages=document.querySelector('#messages');form.addEventListener('submit',async event=>{event.preventDefault();const message=input.value.trim();if(!message)return;messages.textContent+='\n\nYou: '+message;input.value='';const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});const data=await response.json();messages.textContent+='\n\nGod: '+data.response;});</script>
+</body></html>

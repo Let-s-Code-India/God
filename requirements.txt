@@ -1,4 +1,8 @@
+rich>=13.7
+requests>=2.31
+python-dotenv>=1.0
+openai>=1.0
+google-generativeai>=0.8
+anthropic>=0.30
 fastapi>=0.110
 uvicorn>=0.29
-rich>=13.7
-python-dotenv>=1.0

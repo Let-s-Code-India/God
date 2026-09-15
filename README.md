@@ -1,286 +1,436 @@
-# God-main (AURA)
+# God AI
 
-God-main is a small, cross-platform AI workbench. It gives you one assistant name, one configuration file, and two ways to work:
+<p align="center">
+  <strong>One AI copilot for your terminal, your Python code, and your local models.</strong>
+</p>
 
-- **Terminal mode** for asking questions, generating commands, and completing coding tasks in the current folder.
-- **Localhost web mode** for chatting from a browser while keeping the model connection and command execution on your own computer.
+<p align="center">
+  <a href="https://pypi.org/project/god-ai/"><img src="https://img.shields.io/pypi/v/god-ai.svg" alt="PyPI"></a>
+  <a href="https://github.com/ayushgiriai21-cmd/God/actions"><img src="https://github.com/ayushgiriai21-cmd/God/actions/workflows/publish.yml/badge.svg" alt="Build"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <img src="https://img.shields.io/badge/python-3.9%2B-yellow.svg" alt="Python 3.9+">
+</p>
 
-The project is intentionally lightweight. It uses Python's standard library for HTTP requests, SQLite or JSON for memory, and optional packages only for the web server and terminal presentation.
+God AI is a hybrid Python package for developers who want an AI assistant at the command line and inside their own applications. Use a cloud provider, Ollama, or LM Studio through one configuration surface.
 
-## How the Pieces Fit Together
+> **Status:** `0.1.0` is an alpha release. Review generated code and keep command execution in safe mode while evaluating the project.
 
-```text
-Your prompt
-    |
-    v
-main.py ---------------------------> Terminal output or web_server.py
-    |                                      |
-    +--> memory_manager.py                +--> static/index.html
-    |       SQLite or JSON                |
-    +--> system_detector.py              |
-    |       platform constraints          +--> LLMHandler
-    +--> llm_handler.py                  +--> CommandExecutor
-            cloud/local API                     Safe or God mode
-```
+## Contents
 
-### Main modules
+- [What You Get](#what-you-get)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Local LLM Setup](#local-llm-setup)
+- [CLI Mode](#cli-mode)
+- [Python SDK](#python-sdk)
+- [Device Setup](#device-setup)
+- [Security](#security)
+- [Development](#development)
+- [Release to PyPI](#release-to-pypi)
+- [Contributing](#contributing)
 
-| File | Responsibility |
-| --- | --- |
-| `main.py` | Unified command-line entry point and web launcher. |
-| `config.py` | Loads `.env`, validates settings, and supplies defaults. |
-| `system_detector.py` | Detects Windows, macOS, Linux, Termux, iSH, shell, CPU, and package manager. |
-| `llm_handler.py` | Sends chat requests to OpenAI-compatible APIs, Gemini, or Anthropic. |
-| `command_executor.py` | Extracts fenced shell commands, asks for confirmation, runs them, and supports repair retries. |
-| `memory_manager.py` | Stores chat history and project facts in SQLite or JSON. |
-| `web_server.py` | Serves the browser UI and `/api/chat` and `/api/health` endpoints. |
-| `termux_features.py` | Optional Termux:API speech and text-to-speech helpers. |
-| `static/index.html` | Browser chat interface. |
+## What You Get
 
-## Before You Begin
+### Mode 1: Terminal assistant
 
-You need:
-
-- Python 3.10 or newer. Python 3.11 or 3.12 is recommended.
-- Git.
-- A supported model provider: a cloud API key or a local model server.
-- Internet access for installation and cloud providers. Local models can run without an internet connection after download.
-
-Supported environments include Linux, macOS, Windows, Android Termux, and iSH on Alpine Linux. On mobile devices, choose JSON memory if SQLite is unavailable or too resource-intensive.
-
-## Install
-
-### Linux, macOS, Termux, or iSH
+After installation, ask God AI to inspect a project, explain an error, or plan a change:
 
 ```sh
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git god-main
-cd god-main
+god "explain this project and suggest a test plan"
+god "build a web app in the current directory"
+```
+
+The legacy checkout command also works:
+
+```sh
+python main.py "summarize the current project"
+```
+
+### Mode 2: Python library
+
+Import the same runtime into your application:
+
+```python
+from god_ai import god
+
+god.configure(provider="ollama", model="llama3")
+answer = god.do("Return a list of the prime numbers below 20")
+print(answer)
+```
+
+The SDK exposes four intentionally small capabilities:
+
+| API | Purpose |
+| --- | --- |
+| `god.configure(...)` | Select a cloud provider or local model endpoint. |
+| `@god.heal` | Diagnose a runtime exception with the LLM and retry the function. |
+| `god.do(...)` | Turn a natural-language instruction into guarded in-memory Python. |
+| `god.system` | Read stable OS, Termux, iSH, shell, and package-manager facts. |
+
+## Architecture
+
+```text
+                    +----------------------+
+                    |  god CLI / Python SDK |
+                    +----------+-----------+
+                               |
+             +-----------------+------------------+
+             |                                    |
+       LLMClient                             system
+   cloud or local API                  platform constraints
+             |
+   +---------+----------+
+   |                    |
+  heal                 do
+ diagnostics       guarded Python
+   |
+ memory / command execution / optional localhost web UI
+```
+
+The canonical source lives under `src/god_ai/`. Root-level Python files are thin compatibility entry points for older checkouts. `pyproject.toml` is the source of packaging truth.
+
+## Installation
+
+### From PyPI
+
+```sh
+python -m pip install --upgrade god-ai
+```
+
+Verify the installation:
+
+```sh
+god --help
+python -c "from god_ai import god; print(god.system.as_dict())"
+```
+
+### From source
+
+```sh
+git clone https://github.com/ayushgiriai21-cmd/God.git god-ai
+cd god-ai
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install -e .
 ```
 
-On systems where the command is `python` rather than `python3`, replace `python3` with `python`.
-
-### Windows PowerShell
+Windows PowerShell:
 
 ```powershell
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git god-main
-Set-Location god-main
+git clone https://github.com/ayushgiriai21-cmd/God.git god-ai
+Set-Location god-ai
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install -e .
 ```
 
-If PowerShell blocks activation, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, then activate the environment again.
+## Configuration
 
-## Configure AURA
+Configuration is process-wide and can be supplied directly in Python, through environment variables, or in a root `.env` file.
 
-The setup wizard is the easiest route:
+```python
+from god_ai import god
 
-```sh
-python setup.py
+god.configure(
+    provider="openai",
+    api_key="your-api-key",
+    model="gpt-4o-mini",
+)
 ```
 
-It asks for the assistant name, provider, model, API key or local URL, interface, execution security, memory backend, and optional Termux voice features. It writes `.env` in the project directory.
+Available provider names are `openai`, `gemini`, `anthropic`, `groq`, `local`, and the convenience alias `ollama`. Local providers do not require an API key.
 
-You can also configure the project manually:
-
-```sh
-cp .env.example .env
-```
-
-On Windows PowerShell use `Copy-Item .env.example .env`. Never commit `.env`; it may contain a secret. `.env.example` is safe to commit.
-
-Important settings:
-
-| Variable | Example | Meaning |
-| --- | --- | --- |
-| `AURA_PROVIDER` | `local` | `openai`, `gemini`, `anthropic`, `groq`, or `local`. |
-| `AURA_API_KEY` | `...` | Cloud provider key. Usually empty for local models. |
-| `AURA_BASE_URL` | `http://localhost:11434/v1` | Optional provider or local server URL. |
-| `AURA_MODEL` | `llama3.2` | Model name accepted by the selected provider. |
-| `AURA_MODE` | `cli` | `cli` or `web`. |
-| `AURA_SECURITY_MODE` | `safe` | `safe` asks before shell commands; `god` runs them automatically. |
-| `AURA_MEMORY_BACKEND` | `sqlite` | Use `json` on constrained devices. |
-| `AURA_PORT` | `8000` | Local web port. |
-
-## Local LLM Setup (Recommended for Privacy)
-
-AURA can talk to local servers using the OpenAI-compatible `/v1/chat/completions` format. The easiest choices are Ollama and LM Studio.
-
-### Option A: Ollama
-
-1. Install Ollama from [ollama.com](https://ollama.com/).
-2. Start the Ollama service. The installer normally starts it automatically.
-3. Download and run a model:
-
-```sh
-ollama run llama3.2
-```
-
-The first run downloads the model. Ollama normally listens at `http://localhost:11434` and exposes the OpenAI-compatible API at `http://localhost:11434/v1`.
-
-4. Configure AURA:
+Example `.env`:
 
 ```dotenv
 AURA_PROVIDER=local
 AURA_BASE_URL=http://localhost:11434/v1
-AURA_MODEL=llama3.2
+AURA_MODEL=llama3
 AURA_API_KEY=
 ```
 
-Or run `python setup.py` and select **Local LLM**.
+Useful variables:
 
-5. Test Ollama directly:
+| Variable | Meaning |
+| --- | --- |
+| `AURA_PROVIDER` | Provider route. |
+| `AURA_API_KEY` | Cloud provider credential. Keep it private. |
+| `AURA_BASE_URL` | Custom or local OpenAI-compatible endpoint. |
+| `AURA_MODEL` | Model identifier accepted by that provider. |
+| `AURA_REQUEST_TIMEOUT` | Network timeout in seconds. |
+| `AURA_MAX_DEBUG_RETRIES` | CLI command repair attempts. |
+
+## Local LLM Setup
+
+Local inference keeps prompts on your device after the model is downloaded. God AI uses the OpenAI-compatible chat endpoint, so the connection has three important values: provider, base URL, and model identifier.
+
+### Option A: Ollama
+
+1. Download and install Ollama from [ollama.com](https://ollama.com/).
+2. Open a terminal and download a model by running it:
 
 ```sh
+ollama run llama3
+```
+
+The first run downloads the model. Ollama usually starts its server automatically at `http://localhost:11434`.
+
+3. Confirm the model server:
+
+```sh
+curl http://localhost:11434/api/tags
 curl http://localhost:11434/v1/models
 ```
 
-Then test AURA:
+4. Connect God AI from the CLI:
 
 ```sh
-python main.py "Reply with exactly: local model connected"
+export AURA_PROVIDER=ollama
+export AURA_BASE_URL=http://localhost:11434/v1
+export AURA_MODEL=llama3
+god "Reply with exactly: Ollama connected"
 ```
 
-If Ollama says the model is missing, run `ollama pull llama3.2` and retry.
+PowerShell:
+
+```powershell
+$env:AURA_PROVIDER="ollama"
+$env:AURA_BASE_URL="http://localhost:11434/v1"
+$env:AURA_MODEL="llama3"
+god "Reply with exactly: Ollama connected"
+```
+
+5. Connect from Python:
+
+```python
+from god_ai import god
+
+god.configure(
+    provider="ollama",
+    base_url="http://localhost:11434/v1",
+    model="llama3",
+)
+print(god.do("Return the string 'Ollama connected'"))
+```
+
+For a smaller device, choose a smaller model and expect slower first-token latency. `ollama list` shows installed models; `ollama pull llama3` downloads without starting an interactive chat.
 
 ### Option B: LM Studio
 
 1. Download LM Studio from [lmstudio.ai](https://lmstudio.ai/).
-2. Open the app, search for a model, download it, and load it in the chat or server view.
-3. Open the **Local Server** tab and click **Start Server**. LM Studio commonly uses `http://localhost:1234/v1`.
-4. Set these values in `.env`:
-
-```dotenv
-AURA_PROVIDER=local
-AURA_BASE_URL=http://localhost:1234/v1
-AURA_MODEL=your-loaded-model-id
-AURA_API_KEY=
-```
-
-Use the exact model identifier shown by LM Studio. Verify the server with:
+2. Download a model in the Discover tab.
+3. Load the model in the Chat tab.
+4. Open **Local Server**, select the loaded model, and click **Start Server**.
+5. LM Studio commonly listens at `http://localhost:1234/v1`.
+6. Inspect the exact model identifier:
 
 ```sh
 curl http://localhost:1234/v1/models
 ```
 
-Then run the AURA test command shown in the Ollama section.
+7. Configure the CLI or `.env`:
+
+```dotenv
+AURA_PROVIDER=local
+AURA_BASE_URL=http://localhost:1234/v1
+AURA_MODEL=the-model-id-returned-by-lm-studio
+AURA_API_KEY=
+```
+
+8. Configure the SDK:
+
+```python
+from god_ai import god
+
+god.configure(
+    provider="local",
+    base_url="http://localhost:1234/v1",
+    model="the-model-id-returned-by-lm-studio",
+)
+print(god.do("Return a JSON-like dictionary with status='connected'"))
+```
 
 ### Local model troubleshooting
 
-- `Connection refused`: start Ollama or LM Studio and check the port.
-- `404 Not Found`: ensure `AURA_BASE_URL` ends in `/v1` for an OpenAI-compatible server.
-- Model not found: use the exact installed model name, not a display nickname.
-- Slow responses: choose a smaller quantized model and increase `AURA_REQUEST_TIMEOUT`.
-- Termux or iSH memory pressure: use a small model, JSON memory, and avoid running the web UI and model together on very small devices.
+- **Connection refused:** start the Ollama or LM Studio server.
+- **404 from chat completions:** use the OpenAI-compatible URL ending in `/v1`.
+- **Model not found:** copy the exact ID from `/v1/models`; display names are not always IDs.
+- **Timeout:** use a smaller model or increase `AURA_REQUEST_TIMEOUT`.
+- **Port conflict:** update `AURA_BASE_URL` to the server's actual port.
 
-## Cloud Providers
+## Python SDK
 
-Run `python setup.py`, select a provider, and paste its API key. The supported routes are:
+### Self-healing decorator
 
-- OpenAI: `https://api.openai.com/v1`
-- Groq: `https://api.groq.com/openai/v1`
-- Google Gemini: `https://generativelanguage.googleapis.com/v1beta/models`
-- Anthropic: `https://api.anthropic.com/v1`
+`@god.heal` catches an exception, sends the traceback and available function source to the configured model for diagnosis, logs the diagnosis, retries according to `heal_retries`, and re-raises the original failure if the retry still fails.
 
-For a compatible gateway, set `AURA_PROVIDER=local` or `groq` and provide its OpenAI-compatible base URL.
+```python
+import logging
+from god_ai import god
 
-## Use AURA
+logging.basicConfig(level=logging.INFO)
+god.configure(provider="ollama", model="llama3", heal_retries=1)
 
-### Terminal mode
+@god.heal
+def parse_port(value: str) -> int:
+    return int(value)
 
-```sh
-python main.py "explain this project and suggest a test plan"
-python main.py "build a QR code generator site and host it"
+print(parse_port("8000"))
 ```
 
-The assistant may return fenced shell commands. Safe mode asks before each command. A failed command can be sent back to the model for up to three repair attempts, controlled by `AURA_MAX_DEBUG_RETRIES`.
+Healing is diagnostic assistance, not magic code mutation. It does not silently rewrite your source file.
 
-### Web mode
+### Ghost function execution
 
-```sh
-python main.py --web
+`god.do()` asks the model for a Python block assigning its final value to `result`, validates the AST, blocks imports and process/filesystem primitives, then executes it in memory.
+
+```python
+from god_ai import god
+
+god.configure(provider="ollama", model="llama3")
+result = god.do(
+    "Calculate the average and maximum temperature",
+    context={"temperatures": [18, 21, 19, 24]},
+)
+print(result)
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser. You can also set `AURA_MODE=web` and run `python main.py`, or start the server directly:
+Treat generated code as untrusted input. The guard reduces the attack surface but is not a security sandbox. Do not use `god.do()` with untrusted model servers or sensitive data.
 
-```sh
-python web_server.py
+### System detection
+
+```python
+from god_ai import god
+
+print(god.system.os_name)
+print(god.system.package_manager)
+print(god.system.is_termux)
+print(god.system.is_ish)
+print(god.system.as_dict())
 ```
 
-The health endpoint is [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health). A successful response shows the assistant name, provider, and security mode.
+Detection is read-only and does not install packages or execute shell commands. Termux and iSH constraints can be included in prompts with `god_ai.system_prompt()`.
 
-### Create an `ai` command
+## CLI Device Setup
 
-Linux, macOS, Termux, and iSH:
+### Linux
 
 ```sh
-echo "alias ai='python /absolute/path/to/god-main/main.py'" >> ~/.bashrc
+sudo apt update
+sudo apt install -y python3 python3-venv git
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install god-ai
 ```
 
-For zsh, append it to `~/.zshrc`, then open a new terminal. On Windows PowerShell:
+### macOS
+
+Install Python and Git with [Homebrew](https://brew.sh/), then:
+
+```sh
+brew install python git
+python3 -m pip install god-ai
+god "inspect this directory"
+```
+
+### Windows
+
+Install Python 3.9+ and Git, then in PowerShell:
 
 ```powershell
-function ai { python C:\absolute\path\to\god-main\main.py @args }
+py -3 -m pip install god-ai
+god "inspect this directory"
 ```
 
-## Security Notes
-
-Safe mode is the default and should remain enabled while learning the project. God mode executes model-generated shell commands without confirmation. It is not a sandbox and should only be used in a disposable or trusted directory. AURA does not grant administrator privileges, but a command can still damage files that your user account can access.
-
-Keep API keys only in `.env` or environment variables. Do not paste them into prompts, commit them, or place them in `memory/`.
-
-## Testing and Diagnostics
-
-Run these checks from the project root:
+### Android Termux
 
 ```sh
-python -m py_compile *.py
-python main.py --help
-python -c "from system_detector import detect_system; print(detect_system().as_dict())"
-python -c "from config import Settings; print(Settings.from_env().validate() or 'configuration valid')"
+pkg update
+pkg install python git
+python -m pip install god-ai
+god "use Termux-compatible commands"
 ```
 
-For a live model test, first verify the local server with `/v1/models`, then run:
+Avoid `sudo` and `systemd`. For voice helpers, install the Termux:API package and the companion Android application. Small phones may need a lightweight local model or a cloud provider.
+
+### iSH on iPhone or iPad
 
 ```sh
-python main.py "Reply with exactly: connection test passed"
+apk update
+apk add python3 py3-pip git
+python3 -m pip install --break-system-packages god-ai
+god "use portable Alpine commands"
 ```
 
-## Git: Commit and Push to `main`
+Prefer JSON or lightweight workflows on constrained iSH environments. Avoid assuming GNU utilities or `systemd`.
 
-Review the files before committing:
+## Security
+
+Safe defaults matter because a model can generate destructive commands or unsafe code.
+
+- CLI shell commands should be reviewed before execution.
+- Do not enable automatic command execution in a directory containing secrets.
+- Never commit `.env`, API keys, model credentials, or memory files.
+- `god.do()` is guarded execution, not a container or operating-system sandbox.
+- Use a separate user, container, or disposable workspace for experiments.
+- Use a trusted local model server and restrict its network exposure to localhost.
+
+## Development
 
 ```sh
-git status
-git diff
+git clone https://github.com/ayushgiriai21-cmd/God.git
+cd God
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e .
+python -m py_compile $(find src -name '*.py')
+god --help
+python -c "from god_ai import god; print(god.system.as_dict())"
 ```
 
-Then commit and push:
+Build distributions locally:
 
 ```sh
+python -m pip install build twine
+python -m build
+python -m twine check dist/*
+```
+
+The package uses `src/` layout, PEP 621 metadata, `setuptools`, and the console entry point `god = god_ai.cli:main`.
+
+## Release to PyPI
+
+1. Update the version in `pyproject.toml`.
+2. Run the compile checks and build validation.
+3. Commit the version change.
+4. Create and push a version tag:
+
+```sh
+git add pyproject.toml README.md src
+git commit -m "Release v0.1.0"
+git tag v0.1.0
+git push origin main --tags
+```
+
+5. Or create a GitHub Release for the tag. The workflow at `.github/workflows/publish.yml` runs on a published release or any `v*` tag, builds an sdist and wheel, checks them with Twine, and publishes with `PYPI_API_TOKEN`.
+6. Add the repository secret at **Settings -> Secrets and variables -> Actions -> New repository secret** with the name `PYPI_API_TOKEN`.
+
+Never put a PyPI token in source code or commit history.
+
+## Contributing
+
+Open an issue for a bug or design proposal. For a pull request:
+
+```sh
+git checkout -b feature/your-change
+python -m py_compile $(find src -name '*.py')
+git diff --check
 git add .
-git commit -m "Improve AURA architecture and documentation"
-git branch -M main
-git push -u origin main
+git commit -m "Describe the change"
+git push -u origin feature/your-change
 ```
 
-If `origin` is not configured yet:
-
-```sh
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-git push -u origin main
-```
-
-If the remote already has commits that are not local:
-
-```sh
-git pull --rebase origin main
-git push origin main
-```
-
-Resolve any conflicts, run the tests again, and then push. Do not use `git push --force` on a shared `main` branch.
+Please keep public APIs typed, avoid platform-specific assumptions, add a focused smoke test for behavior changes, and document new configuration variables.

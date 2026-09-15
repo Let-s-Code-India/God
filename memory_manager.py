@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -22,7 +23,7 @@ class MemoryManager:
                 db.commit()
 
     def _connect(self) -> sqlite3.Connection:
-        return sqlite3.connect(self.db_path)
+        return sqlite3.connect(self.db_path, timeout=10)
 
     def add(self, session_id: str, role: str, content: str) -> None:
         timestamp = datetime.now(timezone.utc).isoformat()
@@ -33,7 +34,7 @@ class MemoryManager:
             return
         records = self._read_json()
         records.append({"session_id": session_id, "role": role, "content": content, "created_at": timestamp})
-        self.json_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
+        self._write_json(records)
 
     def recent(self, session_id: str, limit: int = 12) -> list[dict[str, Any]]:
         if self.backend == "sqlite":
@@ -76,3 +77,13 @@ class MemoryManager:
             return data if isinstance(data, list) else []
         except (OSError, json.JSONDecodeError):
             return []
+
+    def _write_json(self, records: list[dict[str, Any]]) -> None:
+        payload = json.dumps(records, indent=2) + "\n"
+        try:
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=self.root, delete=False) as temporary:
+                temporary.write(payload)
+                temporary_path = Path(temporary.name)
+            temporary_path.replace(self.json_path)
+        except OSError as exc:
+            raise RuntimeError(f"Could not write memory file {self.json_path}: {exc}") from exc

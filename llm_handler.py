@@ -22,6 +22,14 @@ class LLMError(RuntimeError):
 
 
 class LLMHandler:
+    DEFAULT_BASE_URLS = {
+        "openai": "https://api.openai.com/v1",
+        "groq": "https://api.groq.com/openai/v1",
+        "local": "http://localhost:11434/v1",
+        "gemini": "https://generativelanguage.googleapis.com/v1beta/models",
+        "anthropic": "https://api.anthropic.com/v1",
+    }
+
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
 
@@ -40,11 +48,19 @@ class LLMHandler:
         try:
             with urllib.request.urlopen(request, timeout=self.settings.request_timeout) as response:
                 return json.loads(response.read().decode("utf-8"))
-        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as exc:
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace").strip()
+            raise LLMError(f"Provider returned HTTP {exc.code}: {detail or exc.reason}") from exc
+        except (urllib.error.URLError, TimeoutError) as exc:
             raise LLMError(f"Provider request failed: {exc}") from exc
+        except json.JSONDecodeError as exc:
+            raise LLMError("Provider returned invalid JSON") from exc
+
+    def _base_url(self) -> str:
+        return (self.settings.base_url or self.DEFAULT_BASE_URLS[self.settings.provider]).rstrip("/")
 
     def _openai_compatible(self, messages: list[dict[str, str]], system: str) -> LLMResponse:
-        base = self.settings.base_url or "https://api.openai.com/v1"
+        base = self._base_url()
         payload_messages = ([{"role": "system", "content": system}] if system else []) + messages
         data = self._request(f"{base.rstrip('/')}/chat/completions", {"model": self.settings.model, "messages": payload_messages}, {"Content-Type": "application/json", **({"Authorization": f"Bearer {self.settings.api_key}"} if self.settings.api_key else {})})
         try:
@@ -54,7 +70,7 @@ class LLMHandler:
 
     def _gemini(self, messages: list[dict[str, str]], system: str) -> LLMResponse:
         contents = [{"role": "user" if message["role"] != "assistant" else "model", "parts": [{"text": message["content"]}]} for message in messages]
-        url = f"{self.settings.base_url or 'https://generativelanguage.googleapis.com/v1beta/models'}/{self.settings.model}:generateContent?key={self.settings.api_key}"
+        url = f"{self._base_url()}/{self.settings.model}:generateContent?key={self.settings.api_key}"
         data = self._request(url, {"systemInstruction": {"parts": [{"text": system}]} if system else {}, "contents": contents}, {"Content-Type": "application/json"})
         try:
             return LLMResponse(data["candidates"][0]["content"]["parts"][0]["text"], data)
@@ -62,7 +78,7 @@ class LLMHandler:
             raise LLMError("Gemini returned an unexpected response") from exc
 
     def _anthropic(self, messages: list[dict[str, str]], system: str) -> LLMResponse:
-        data = self._request(f"{self.settings.base_url or 'https://api.anthropic.com/v1'}/messages", {"model": self.settings.model, "max_tokens": 4096, "system": system, "messages": messages}, {"Content-Type": "application/json", "x-api-key": self.settings.api_key, "anthropic-version": "2023-06-01"})
+        data = self._request(f"{self._base_url()}/messages", {"model": self.settings.model, "max_tokens": 4096, "system": system, "messages": messages}, {"Content-Type": "application/json", "x-api-key": self.settings.api_key, "anthropic-version": "2023-06-01"})
         try:
             return LLMResponse(data["content"][0]["text"], data)
         except (KeyError, IndexError, TypeError) as exc:

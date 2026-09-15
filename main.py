@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
-import uuid
 
 from command_executor import CommandExecutor
 from config import Settings
@@ -23,13 +23,14 @@ def render(text: str) -> None:
 
 
 def run_cli(settings: Settings, prompt: str) -> int:
-    session_id = str(uuid.uuid4())
+    session_id = os.getenv("AURA_SESSION_ID", "cli")
     memory = MemoryManager(settings.memory_backend)
     handler = LLMHandler(settings)
     executor = CommandExecutor(settings)
     memory.add(session_id, "user", prompt)
     context = memory.context_text(session_id)
-    system = f"You are {settings.assistant_name}, a practical cross-platform coding assistant. {system_prompt()}\nPrevious context:\n{context}"
+    facts = memory.facts_text()
+    system = f"You are {settings.assistant_name}, a practical cross-platform coding assistant. {system_prompt()}\nPrevious context:\n{context}\nProject facts:\n{facts or 'No stored project facts.'}"
     try:
         response = handler.chat([{"role": "user", "content": prompt}], system)
     except LLMError as exc:
@@ -53,7 +54,10 @@ def main() -> int:
     parser.add_argument("prompt", nargs="*", help="Task for the assistant")
     parser.add_argument("--web", action="store_true", help="Start the localhost web UI")
     args = parser.parse_args()
-    settings = Settings.from_env()
+    try:
+        settings = Settings.from_env()
+    except ValueError as exc:
+        parser.error(str(exc))
     if errors := settings.validate():
         parser.error("; ".join(errors))
     if args.web or settings.mode == "web":

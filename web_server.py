@@ -62,3 +62,11 @@ def create_app(settings: Settings):
 def serve(settings: Settings) -> None:
     import uvicorn
     uvicorn.run(create_app(settings), host=settings.host, port=settings.port)
+
+
+if __name__ == "__main__":
+    settings = Settings.from_env()
+    errors = settings.validate()
+    if errors:
+        raise SystemExit("Configuration error: " + "; ".join(errors))
+    serve(settings)

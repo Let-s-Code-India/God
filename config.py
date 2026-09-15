@@ -39,7 +39,7 @@ class Settings:
     request_timeout: int = 120
 
     def validate(self) -> list[str]:
-        errors = []
+        errors: list[str] = []
         if self.provider not in {"openai", "gemini", "anthropic", "groq", "local"}:
             errors.append(f"Unsupported provider: {self.provider}")
         if self.mode not in {"cli", "web"}:
@@ -50,21 +50,33 @@ class Settings:
             errors.append(f"Unsupported memory backend: {self.memory_backend}")
         if not 1 <= self.port <= 65535:
             errors.append("Port must be between 1 and 65535")
+        if not self.model.strip():
+            errors.append("AURA_MODEL cannot be empty")
+        if self.request_timeout < 5:
+            errors.append("Request timeout must be at least 5 seconds")
         return errors
 
     @classmethod
     def from_env(cls) -> "Settings":
         load_dotenv()
-        settings = cls(
-            assistant_name=os.getenv("AURA_NAME", "AURA"), provider=os.getenv("AURA_PROVIDER", "openai").lower(),
-            api_key=os.getenv("AURA_API_KEY", ""), base_url=os.getenv("AURA_BASE_URL", ""),
-            model=os.getenv("AURA_MODEL", "gpt-4o-mini"), mode=os.getenv("AURA_MODE", "cli").lower(),
-            security_mode=os.getenv("AURA_SECURITY_MODE", "safe").lower(), memory_backend=os.getenv("AURA_MEMORY_BACKEND", "sqlite").lower(),
-            termux_api=os.getenv("AURA_TERMUX_API", "false").lower() in {"1", "true", "yes"},
-            host=os.getenv("AURA_HOST", "127.0.0.1"), port=int(os.getenv("AURA_PORT", "8000")),
-            max_debug_retries=max(0, int(os.getenv("AURA_MAX_DEBUG_RETRIES", "3"))), request_timeout=max(5, int(os.getenv("AURA_REQUEST_TIMEOUT", "120"))),
-        )
-        return settings
+        try:
+            return cls(
+                assistant_name=os.getenv("AURA_NAME", "AURA").strip() or "AURA",
+                provider=os.getenv("AURA_PROVIDER", "openai").lower().strip(),
+                api_key=os.getenv("AURA_API_KEY", "").strip(),
+                base_url=os.getenv("AURA_BASE_URL", "").strip(),
+                model=os.getenv("AURA_MODEL", "gpt-4o-mini").strip(),
+                mode=os.getenv("AURA_MODE", "cli").lower().strip(),
+                security_mode=os.getenv("AURA_SECURITY_MODE", "safe").lower().strip(),
+                memory_backend=os.getenv("AURA_MEMORY_BACKEND", "sqlite").lower().strip(),
+                termux_api=os.getenv("AURA_TERMUX_API", "false").lower() in {"1", "true", "yes"},
+                host=os.getenv("AURA_HOST", "127.0.0.1").strip(),
+                port=int(os.getenv("AURA_PORT", "8000")),
+                max_debug_retries=max(0, int(os.getenv("AURA_MAX_DEBUG_RETRIES", "3"))),
+                request_timeout=max(5, int(os.getenv("AURA_REQUEST_TIMEOUT", "120"))),
+            )
+        except ValueError as exc:
+            raise ValueError(f"Invalid numeric AURA setting: {exc}") from exc
 
     def to_env(self) -> str:
         values = {"AURA_NAME": self.assistant_name, "AURA_PROVIDER": self.provider, "AURA_API_KEY": self.api_key, "AURA_BASE_URL": self.base_url, "AURA_MODEL": self.model, "AURA_MODE": self.mode, "AURA_SECURITY_MODE": self.security_mode, "AURA_MEMORY_BACKEND": self.memory_backend, "AURA_TERMUX_API": str(self.termux_api).lower(), "AURA_HOST": self.host, "AURA_PORT": str(self.port), "AURA_MAX_DEBUG_RETRIES": str(self.max_debug_retries), "AURA_REQUEST_TIMEOUT": str(self.request_timeout)}

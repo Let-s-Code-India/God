@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "god-ai"
-version = "1.1.0"
-description = "Hybrid terminal assistant, Python SDK, and aura ecosystem for AI-powered developer workflows"
+version = "1.1.1"
+description = "Confirmation-gated terminal assistant and Python SDK for self-healing, guarded code generation, structured parsing, multi-provider LLM routing, and autonomous pytest repair"
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"

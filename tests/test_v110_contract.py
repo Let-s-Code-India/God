@@ -5,7 +5,7 @@ from god_ai import aura
 
 
 def test_package_version_and_exports():
-    assert god_ai.__version__ == "1.1.0"
+    assert god_ai.__version__ == "1.1.1"
     for name in ["heal", "trace_exceptions", "auto_patch", "do", "exec_sandboxed", "eval_expr", "parse", "optimize", "benchmark", "cost_profiler"]:
         assert hasattr(aura, name), f"Missing aura export: {name}"
 

@@ -1,4 +1,4 @@
-# God AI / AURA — v1.1.0
+# God AI / AURA — v1.1.1
 
 <p align="center">
   <img src="assets/logo.svg" alt="God AI logo" width="180" />
@@ -19,7 +19,7 @@ God AI (package name on PyPI: **`god-ai`**, import name: **`god_ai`**) is three 
 
 1. **A terminal assistant** — the `god` / `aura` console commands. You describe a task in plain English, the assistant proposes shell commands, and *you* confirm every command before it runs.
 2. **A typed Python SDK** (`from god_ai import ...`) — configuration, an LLM router across six providers, guarded code generation, self-healing decorators, structured parsing, and safe system inspection.
-3. **The `god_ai.aura` namespace** — a curated, backward-compatible surface over the same SDK, purpose-built for import ergonomics (`from god_ai import aura`) and for the 1.1.0 extension suite (tracing, sandboxed execution, benchmarking, cost profiling, and a bounded autonomous pytest agent).
+3. **The `god_ai.aura` namespace** — a curated, backward-compatible surface over the same SDK, purpose-built for import ergonomics (`from god_ai import aura`) and for the 1.1.1 extension suite (tracing, sandboxed execution, benchmarking, cost profiling, and a bounded autonomous pytest agent).
 
 Every "AI-assisted" feature in this project degrades honestly: if a provider call fails, the original exception is preserved and re-raised — nothing is silently swallowed or faked as a success.
 
@@ -27,7 +27,7 @@ Every "AI-assisted" feature in this project degrades honestly: if a provider cal
 
 ## Table of contents
 
-- [What's new in 1.1.0](#whats-new-in-110)
+- [What's new in 1.1.1](#whats-new-in-111)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Architecture — what each module does](#architecture--what-each-module-does)
@@ -56,7 +56,7 @@ Every "AI-assisted" feature in this project degrades honestly: if a provider cal
 
 ---
 
-## What's new in 1.1.0
+## What's new in 1.1.1
 
 - Expanded `god_ai.aura` exports: `trace_exceptions`, `auto_patch`, `exec_sandboxed`, `eval_expr`, `to_pydantic`, `to_dataclass`, `benchmark`, and `cost_profiler`, on top of the original `configure`, `heal`, `do`, `parse`, `optimize`, `agent`, and `system`.
 - Lightweight core install (`rich`, `requests`, `python-dotenv`, `pydantic`) with opt-in extras: `aura`, `torch`, `web`, `cloud`, and `examples`.
@@ -445,7 +445,7 @@ serve()   # equivalent to `god --web`
 
 ## Examples — all 14 runnable files, in full
 
-Every example in `examples/` is reproduced here in full so you can read, copy, and run them without needing to browse the GitHub repository. They're grouped exactly as they exist on disk: the 4 original compatibility examples, then the 10 files added in 1.1.0.
+Every example in `examples/` is reproduced here in full so you can read, copy, and run them without needing to browse the GitHub repository. They're grouped exactly as they exist on disk: the 4 original compatibility examples, then the 10 files added in 1.1.1.
 
 Run any of them from the repository root, e.g. `python examples/03_numpy_matrix_ghost.py`. Each file documents its own optional-dependency requirements in its module docstring where one exists. The Turtle example opens a desktop window and needs a display.
 
@@ -710,7 +710,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### 1.1.0 extension examples
+### 1.1.1 extension examples
 
 #### `examples/01_pytorch_neural_healer.py`
 
@@ -1129,7 +1129,7 @@ python -m twine check dist/*
 
 ## Release process
 
-**v1.1.0 is already tagged and published to PyPI — no new release is required for a documentation-only update like this one.** The steps below are kept for the *next* version bump.
+**v1.1.1 is tagged and published to PyPI.** Create the corresponding GitHub release from the existing tag, then use the same tag-triggered workflow for future version bumps.
 
 The workflow `.github/workflows/publish.yml` triggers on any pushed tag matching `v*`. It checks out the source, sets up Python 3.12, installs `build`, `twine`, `pillow`, and `cairosvg`, regenerates the logo assets, builds the sdist and wheel with `python -m build`, validates both with `python -m twine check dist/*`, and publishes them to PyPI via `pypa/gh-action-pypi-publish` using the `PYPI_API_TOKEN` repository secret.
 

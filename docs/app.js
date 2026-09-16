@@ -60,8 +60,23 @@ query("#run-heal").addEventListener("click", () => { query("#heal-output").textC
 query("#run-parse").addEventListener("click", () => { query("#parse-output").textContent = 'input: "Ada is 36 years old"\nmodel: Person(name="Ada", age=36)\nstatus: validated'; });
 query("#search-input").addEventListener("input", (event) => {
   const search = event.target.value.trim().toLowerCase();
-  document.querySelectorAll("#api-list article").forEach((item) => item.classList.toggle("hidden", !item.dataset.search.includes(search)));
+  document.querySelectorAll("#api-list-wrap .api-list article").forEach((item) => {
+    const matches = !search || (item.dataset.search || "").includes(search);
+    item.classList.toggle("hidden", !matches);
+  });
+  document.querySelectorAll("#api-list-wrap .api-group").forEach((group) => {
+    const visible = group.querySelectorAll(".api-list article:not(.hidden)").length > 0;
+    group.style.display = visible ? "" : "none";
+  });
 });
+
+document.querySelectorAll(".copy-code").forEach((button) => {
+  button.addEventListener("click", () => {
+    const codeBlock = button.parentElement.querySelector("pre code");
+    if (codeBlock) copyText(codeBlock.textContent, button);
+  });
+});
+
 query("#theme-toggle").addEventListener("click", () => {
   document.body.classList.toggle("light");
   localStorage.setItem("god-theme", document.body.classList.contains("light") ? "light" : "dark");

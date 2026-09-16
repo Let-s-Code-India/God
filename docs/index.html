@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>God AI / Aura 1.1.0</title>
-    <meta name="description" content="God AI v1.1.0 documentation portal for the Aura ecosystem." />
+    <title>God AI / Aura 1.1.0 -- Documentation</title>
+    <meta name="description" content="Full documentation for God AI v1.1.0: CLI, Python SDK, the god_ai.aura namespace, provider setup, and every example, in one static page." />
     <link rel="icon" type="image/png" href="assets/favicon_64x64.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -14,58 +14,85 @@
         <img src="assets/logo_255x255.png" alt="God AI logo" class="brand-logo" />
         <div>
           <div class="brand-name">God AI</div>
-          <div class="brand-sub">AURA 1.1.0</div>
+          <div class="brand-sub">AURA 1.1.0 DOCS</div>
         </div>
       </div>
       <nav class="nav">
         <a href="#overview">Overview</a>
+        <a href="#architecture">Architecture</a>
         <a href="#providers">Providers</a>
-        <a href="#playground">Playground</a>
-        <a href="#projects">Projects</a>
-        <a href="#api">API</a>
+        <a href="#api">API reference</a>
+        <a href="#examples">Examples</a>
+        <a href="#credits">Credits</a>
       </nav>
-      <button id="theme-toggle" class="ghost-button" type="button" aria-label="Toggle theme">☼</button>
+      <button id="theme-toggle" class="ghost-button" type="button" aria-label="Toggle theme">&#9788;</button>
     </header>
 
     <main>
       <section id="overview" class="hero panel">
         <div class="hero-copy">
-          <p class="eyebrow">V1.1.0 / AURA CORE ECOSYSTEM</p>
-          <h1>Developer automation with self-healing AI built in.</h1>
+          <p class="eyebrow">V1.1.0 &middot; PyPI: god-ai &middot; import: god_ai</p>
+          <h1>The complete reference for God AI &amp; Aura.</h1>
           <p class="lede">
-            God AI blends a terminal-first CLI, a typed Python SDK, and a web dashboard into one resilient workflow runner for local and cloud LLMs.
+            A confirmation-gated terminal assistant, a typed Python SDK, and the <code>god_ai.aura</code> namespace for
+            self-healing decorators, guarded code generation, structured parsing, and a bounded autonomous test-repair agent.
+            This page documents every public function and embeds all 14 runnable examples, so you never have to leave it to
+            understand how the library works.
           </p>
           <div class="cta-row">
-            <button class="primary-button" data-copy="python -m pip install god-ai" type="button">Copy install</button>
-            <a class="secondary-button" href="#api">Explore API</a>
+            <button class="primary-button" data-copy="python -m pip install god-ai" type="button">Copy install command</button>
+            <a class="secondary-button" href="#api">Jump to API reference</a>
+            <a class="secondary-button" href="#examples">Jump to examples</a>
           </div>
           <div class="badges">
             <span>PyPI v1.1.0</span>
-            <span>MIT</span>
+            <span>MIT license</span>
             <span>Python 3.9+</span>
-            <span>Ollama ready</span>
+            <span>6 LLM providers</span>
+            <span>14 examples</span>
           </div>
         </div>
         <div class="hero-visual">
           <div class="stack">
-            <div class="node node-core">Intent</div>
-            <div class="node node-sdk">Aura SDK</div>
-            <div class="node node-cloud">Cloud models</div>
-            <div class="node node-local">Local models</div>
-            <div class="node node-result">Workspace output</div>
+            <div class="node node-core">Your instruction</div>
+            <div class="node node-sdk">god_ai / aura SDK</div>
+            <div class="node node-cloud">Cloud provider (OpenAI / OpenRouter / Gemini / Anthropic / Groq)</div>
+            <div class="node node-local">or local provider (Ollama / any OpenAI-compatible /v1 server)</div>
+            <div class="node node-result">Diagnosis, structured data, or a confirmed shell command</div>
           </div>
         </div>
       </section>
 
       <section class="search-panel panel">
-        <label for="search-input" class="sr-only">Search functions and docs</label>
-        <input id="search-input" type="search" placeholder="Search for heal, parse, agent, CLI, provider, optimize..." />
+        <label for="search-input" class="sr-only">Search the API reference</label>
+        <input id="search-input" type="search" placeholder="Search the API reference: heal, parse, agent, sandbox, provider, memory, CLI..." />
+      </section>
+
+      <section id="architecture" class="panel docs-section">
+        <div class="section-heading">
+          <p class="eyebrow">ARCHITECTURE</p>
+          <h2>What each module does</h2>
+          <p>The installable package lives at <code>src/god_ai/</code>. Root-level files of the same name are backward-compatible shims that re-export the real implementation below.</p>
+        </div>
+        <div class="arch-grid">
+          <div class="arch-card"><h4>config.py</h4><p>GodConfig dataclass, .env loading, provider normalization, and validation.</p></div>
+          <div class="arch-card"><h4>llm.py</h4><p>LLMClient -- the provider router across OpenAI-compatible, Gemini, and Anthropic request shapes, with retries and one-step fallback.</p></div>
+          <div class="arch-card"><h4>decorators.py</h4><p>The @heal diagnose-then-retry decorator.</p></div>
+          <div class="arch-card"><h4>ghost.py</h4><p>do() -- AST-validated natural-language-to-Python execution.</p></div>
+          <div class="arch-card"><h4>executor.py</h4><p>Confirmation-gated fenced-command extraction and execution.</p></div>
+          <div class="arch-card"><h4>memory.py</h4><p>SQLite or JSON-backed conversation history, keyed by session.</p></div>
+          <div class="arch-card"><h4>system.py</h4><p>Read-only, side-effect-free host and package-manager detection.</p></div>
+          <div class="arch-card"><h4>cli.py</h4><p>The god / aura console-script entry point.</p></div>
+          <div class="arch-card"><h4>web.py</h4><p>Optional FastAPI localhost dashboard (GET /, /api/health, POST /api/chat).</p></div>
+          <div class="arch-card"><h4>aura/</h4><p>The curated god_ai.aura namespace: tracing, auto-patch, sandboxed exec, expression eval, structured parsing, benchmarking, cost profiling, and the autonomous agent.</p></div>
+        </div>
       </section>
 
       <section id="providers" class="panel docs-section">
         <div class="section-heading">
           <p class="eyebrow">PROVIDERS</p>
           <h2>Model providers and setup wizard</h2>
+          <p>Provider resolution runs automatically: an OpenRouter provider with no API key silently falls back to a local provider, so most of this is optional.</p>
         </div>
         <div class="provider-layout">
           <div class="provider-tabs" id="provider-tabs">
@@ -106,7 +133,8 @@
       <section id="playground" class="panel docs-section">
         <div class="section-heading">
           <p class="eyebrow">PLAYGROUND</p>
-          <h2>Interactive examples</h2>
+          <h2>Interactive simulations</h2>
+          <p>Illustrative simulations of two SDK behaviors -- not live model calls.</p>
         </div>
         <div class="playground-grid">
           <article class="demo-card">
@@ -126,63 +154,920 @@
         </div>
       </section>
 
-      <section id="projects" class="panel docs-section">
+      <section id="api" class="panel docs-section">
         <div class="section-heading">
-          <p class="eyebrow">PROJECTS</p>
-          <h2>10 production-ready blueprints</h2>
+          <p class="eyebrow">API REFERENCE</p>
+          <h2>Every public symbol, documented from source</h2>
+          <p>Covers the CLI, the god_ai package root, and the full god_ai.aura namespace. Use the search bar above to filter.</p>
         </div>
-        <div class="project-list" id="project-list">
-          <article class="project-item">01. PyTorch neural healer</article>
-          <article class="project-item">02. TensorFlow model optimizer</article>
-          <article class="project-item">03. NumPy matrix ghost</article>
-          <article class="project-item">04. FastAPI parser</article>
-          <article class="project-item">05. Flask microservice</article>
-          <article class="project-item">06. Turtle generative art</article>
-          <article class="project-item">07. Pytest autonomous repair bot</article>
-          <article class="project-item">08. Data pipeline transformer</article>
-          <article class="project-item">09. Multimodal vision generator</article>
-          <article class="project-item">10. Full-stack scaffolder</article>
+        <div id="api-list-wrap">
+<div class="api-group">
+<h3 class="api-group-title">Configuration API</h3>
+<div class="api-list">
+<article data-search="configure provider api key model env normalized validate">
+<code>configure(**values) -&gt; GodConfig</code>
+<p>Merges keyword arguments over environment variables over defaults, normalizes provider/model/base_url, validates, and stores the result as the process-wide config. Also available as <code>aura.configure()</code>.</p>
+</article>
+<article data-search="get_config current settings">
+<code>get_config() -&gt; GodConfig</code>
+<p>Returns the currently active <code>GodConfig</code> without changing it. Also available as <code>aura.get_config()</code>.</p>
+</article>
+<article data-search="godconfig dataclass provider api_key base_url model request_timeout heal_retries ghost_timeout free_only">
+<code>GodConfig</code>
+<p>Frozen dataclass: <code>provider</code>, <code>api_key</code>, <code>base_url</code>, <code>model</code>, <code>request_timeout</code> (default 120), <code>heal_retries</code> (default 1), <code>ghost_timeout</code> (default 30), <code>free_only</code> (default False).</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Self-healing</h3>
+<div class="api-list">
+<article data-search="heal decorator retry traceback runtime diagnosis locals source">
+<code>@heal / @aura.heal</code>
+<p>Captures source, arguments, per-frame local variables, and the traceback; asks the model for a root-cause diagnosis (logged, not returned); retries the original call up to <code>heal_retries</code> times; re-raises the original exception if every retry still fails.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Diagnostics -- trace and auto-patch</h3>
+<div class="api-list">
+<article data-search="trace_exceptions logging root cause summary">
+<code>@aura.trace_exceptions</code>
+<p>Wraps a function; on exception, sends the traceback for a concise root-cause summary (logged only) and re-raises the original exception unchanged.</p>
+</article>
+<article data-search="auto_patch repair rewrite exec function body">
+<code>@aura.auto_patch</code>
+<p>On exception, asks the model to return a corrected version of the whole function, executes that source, and calls the resulting callable with the original arguments instead. The only decorator that runs model-rewritten code as a live replacement -- use only with trusted providers.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Ghost execution -- natural language to Python</h3>
+<div class="api-list">
+<article data-search="do ghost execution sandbox ast allowed result blocked import sigalrm timeout">
+<code>do(instruction, context=None) / aura.do(...)</code>
+<p>Generates one fenced Python block that must assign to <code>result</code>. AST-validated to reject imports and the names <code>__import__</code>, <code>eval</code>, <code>exec</code>, <code>compile</code>, <code>open</code>, <code>input</code>, <code>breakpoint</code>, <code>system</code>, <code>popen</code>, <code>run</code>. Executes with a minimal safe builtins set plus your <code>context</code>. Times out after <code>ghost_timeout</code> seconds on POSIX via <code>SIGALRM</code> (no-op on Windows). Raises <code>GhostExecutionError</code> on any violation.</p>
+</article>
+<article data-search="ghostexecutionerror exception invalid python blocked name">
+<code>GhostExecutionError</code>
+<p><code>RuntimeError</code> subclass raised by <code>do()</code> for invalid syntax, blocked operations, timeouts, or a missing <code>result</code> assignment.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Sandboxed execution and expression evaluation</h3>
+<div class="api-list">
+<article data-search="exec_sandboxed code context timeout blocked os subprocess socket math statistics">
+<code>aura.exec_sandboxed(code, context=None, timeout_seconds=15)</code>
+<p>For your own code (not model-generated). Blocks imports and calls/attributes named <code>os</code>, <code>subprocess</code>, <code>shutil</code>, <code>pathlib</code>, <code>socket</code>, and the same dangerous builtins as <code>do()</code>. Pre-imports <code>math</code> and <code>statistics</code> into the namespace. Returns <code>result</code> if set, else the whole namespace. The timeout is checked after execution finishes, so it does not interrupt a runaway loop.</p>
+</article>
+<article data-search="eval_expr expression restricted builtins">
+<code>aura.eval_expr(expression, context=None)</code>
+<p>Evaluates a single expression with a restricted builtins set, blocking <code>__import__</code>, <code>open</code>, <code>eval</code>, <code>exec</code>, <code>compile</code>. Includes <code>math</code> in the namespace.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Structured parsing</h3>
+<div class="api-list">
+<article data-search="parse pydantic json model validation typeadapter repair">
+<code>aura.parse(text, model=None)</code>
+<p>Asks the model to return valid JSON for the given text, with one automatic repair pass if the first reply isn't valid JSON. Returns raw JSON if <code>model</code> is <code>None</code>; validates against a Pydantic <code>BaseModel</code> or any typed container via <code>TypeAdapter</code> otherwise.</p>
+</article>
+<article data-search="to_pydantic validate dict list basemodel">
+<code>aura.to_pydantic(data, model)</code>
+<p>Thin wrapper over <code>model.model_validate(data)</code> for data you already have -- no model call.</p>
+</article>
+<article data-search="to_dataclass instantiate dict cls">
+<code>aura.to_dataclass(data, cls)</code>
+<p>Instantiates a <code>@dataclass</code> type from a dict via <code>cls(**data)</code>; raises <code>TypeError</code> if <code>cls</code> isn't a dataclass.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Performance tooling</h3>
+<div class="api-list">
+<article data-search="optimize suggestion slow threshold 0.1s logging">
+<code>@aura.optimize</code>
+<p>Times every call; at or above 0.1s, asks the model for an optimization suggestion and logs it at INFO. Never changes behavior or return value.</p>
+</article>
+<article data-search="benchmark timing print elapsed">
+<code>@aura.benchmark</code>
+<p>Times every call and prints <code>"{qualname} completed in {elapsed:.4f}s"</code>.</p>
+</article>
+<article data-search="cost_profiler cost units approximate">
+<code>@aura.cost_profiler</code>
+<p>Times every call and prints an approximate cost-unit figure (<code>elapsed_seconds * 1000</code>) as a placeholder proxy for cost accounting.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Autonomous agent</h3>
+<div class="api-list">
+<article data-search="agent pytest repair patch diff iterations allow_edits">
+<code>aura.agent(goal, root=None, max_iterations=3, allow_edits=False)</code>
+<p>Runs <code>pytest -q</code>, asks the model for a unified diff on failure, and either returns the diff as text (default, no edits) or applies it with <code>patch -p1</code> when <code>allow_edits=True</code>, repeating up to <code>max_iterations</code> times. Returns an <code>AgentResult(goal, passed, iterations, output)</code>.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">System detection</h3>
+<div class="api-list">
+<article data-search="system snapshot termux ish desktop package manager read-only detect">
+<code>system / aura.system</code>
+<p>A <code>SystemSnapshot</code> singleton computed once at import time: <code>os_name</code>, <code>architecture</code>, <code>kernel</code>, <code>environment</code> (Termux/iSH/Desktop), <code>package_manager</code>, <code>shell</code>, <code>cpu_count</code>, <code>termux_api_available</code>, plus <code>is_termux</code>, <code>is_ish</code>, <code>as_dict()</code>, and <code>prompt_constraints()</code>. Entirely read-only -- never installs or shells out.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">LLM client -- the provider router</h3>
+<div class="api-list">
+<article data-search="llmclient chat providers openai openrouter groq local gemini anthropic fallback retry">
+<code>LLMClient(config=None).chat(messages, system="")</code>
+<p>Routes to an OpenAI-compatible endpoint (openai/local/groq/openrouter), Gemini's generateContent API, or Anthropic's Messages API based on <code>config.provider</code>. Retries transient HTTP errors up to 3 times with exponential backoff, then falls back once to OpenRouter (if an API key is set) or local Ollama.</p>
+</article>
+<article data-search="llmresponse text raw dataclass">
+<code>LLMResponse</code>
+<p>Frozen dataclass: <code>text</code> (extracted reply) and <code>raw</code> (full provider JSON).</p>
+</article>
+<article data-search="llmerror exception provider failure">
+<code>LLMError</code>
+<p><code>RuntimeError</code> subclass raised when no provider (including the fallback) can complete a request.</p>
+</article>
+<article data-search="llmhandler free_only compatibility subclass">
+<code>LLMHandler(config=None, free_only=False)</code>
+<p><code>god_ai.llm_handler.LLMHandler</code> -- an <code>LLMClient</code> subclass kept for compatibility, adding a <code>free_only</code> constructor flag.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Conversation memory</h3>
+<div class="api-list">
+<article data-search="memory sqlite json backend session add recent context">
+<code>Memory(backend="sqlite", root=None)</code>
+<p>Stores messages with <code>session</code>, <code>role</code>, <code>content</code>, and a UTC timestamp. <code>add()</code>, <code>recent(session, limit=12)</code>, and <code>context(session)</code> (a joined "role: content" block for system prompts). SQLite writes to <code>&lt;root&gt;/god_ai.sqlite3</code>; JSON writes to <code>&lt;root&gt;/conversations.json</code>.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Command execution</h3>
+<div class="api-list">
+<article data-search="extract_commands run_commands executionresult fenced bash confirmation gated">
+<code>extract_commands(response) / run_commands(response, safe=True, debug=None, retries=3)</code>
+<p>Extracts fenced bash/sh/shell/powershell/pwsh blocks and runs them one at a time. With <code>safe=True</code> (the CLI default) each command needs an explicit <code>y</code>/<code>yes</code> confirmation before it runs. A <code>debug</code> callback can supply a corrected command after a failed attempt.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">Web dashboard API</h3>
+<div class="api-list">
+<article data-search="web dashboard fastapi create_app serve endpoints health chat">
+<code>create_app() / serve()</code>
+<p>Requires fastapi/uvicorn/pydantic. Exposes <code>GET /</code> (dashboard UI), <code>GET /api/health</code>, and <code>POST /api/chat</code> (message, session_id, execute). <code>serve()</code> runs it on <code>127.0.0.1:8000</code> only.</p>
+</article>
+</div>
+</div>
+
+<div class="api-group">
+<h3 class="api-group-title">CLI</h3>
+<div class="api-list">
+<article data-search="god cli prompt web free flag entry point console script">
+<code>god / aura [--web] [--free] prompt...</code>
+<p>Console-script entry points (both point at <code>god_ai.cli:main</code>). <code>--web</code> starts the local dashboard; <code>--free</code> forces OpenRouter free-tier routing. A prompt is recorded to memory, sent to the configured provider, printed as Markdown via rich when available, and any fenced shell commands in the reply are run only after explicit confirmation.</p>
+</article>
+</div>
+</div>
+
         </div>
       </section>
 
-      <section id="api" class="panel docs-section">
+      <section id="examples" class="panel docs-section">
         <div class="section-heading">
-          <p class="eyebrow">API</p>
-          <h2>SDK reference</h2>
+          <p class="eyebrow">EXAMPLES</p>
+          <h2>All 14 runnable examples, in full</h2>
+          <p>Every file in <code>examples/</code>, embedded directly so you never need to open the repository to read one. Click a file name to expand it, and use "Copy code" to grab it.</p>
         </div>
-        <div id="api-list" class="api-list">
-          <article data-search="configure provider env local openrouter api key">
-            <code>aura.configure(...)</code>
-            <p>Set provider, key, model, endpoint, request timeout, and local fallback behavior.</p>
-          </article>
-          <article data-search="heal decorator retry traceback runtime diagnosis">
-            <code>@aura.heal</code>
-            <p>Capture failing function state, request a root-cause diagnosis, and retry once or more.</p>
-          </article>
-          <article data-search="trace exceptions logging root cause">
-            <code>aura.trace_exceptions</code>
-            <p>Wrap functions and emit runtime diagnostics with structured traceback context.</p>
-          </article>
-          <article data-search="do ghost execution sandbox ast allowed">
-            <code>aura.do(...)</code>
-            <p>Generate and execute guarded Python in a restricted sandbox with AST validation.</p>
-          </article>
-          <article data-search="parse pydantic json model validation">
-            <code>aura.parse(...)</code>
-            <p>Turn unstructured text into valid JSON or a typed Pydantic object.</p>
-          </article>
-          <article data-search="optimize benchmark cost profiler speed">
-            <code>@aura.optimize</code>
-            <p>Profile function execution and log optimization suggestions without changing behavior.</p>
-          </article>
-          <article data-search="agent pytest repair patch diff">
-            <code>aura.agent(...)</code>
-            <p>Run a bounded test-and-fix loop with optional diff-based patching.</p>
-          </article>
-          <article data-search="god cli prompt web free">
-            <code>god --web</code>
-            <p>Launch the local web dashboard or execute prompts in a confirmation-gated shell workflow.</p>
-          </article>
+        <div id="example-list">
+<div class="example-group">
+<h3 class="example-group-title">Original compatibility examples</h3>
+<details class="example-card">
+<summary><code>examples/01_pytorch_healer.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Self-healing PyTorch shape-mismatch trainer. Deliberately feeds NHWC data into an NCHW convolution, lets @aura.heal diagnose it, then retries with a corrected, contiguous batch.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>"""Self-healing PyTorch shape-mismatch training example.
+
+Run after installing the optional dependencies:
+    python -m pip install torch numpy
+    python examples/01_pytorch_healer.py
+"""
+
+from __future__ import annotations
+
+import logging
+from typing import Any
+
+import numpy as np
+import torch
+from torch import nn
+
+from god_ai import aura
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+
+
+class TinyCNN(nn.Module):
+    def __init__(self) -&gt; None:
+        super().__init__()
+        self.features = nn.Sequential(nn.Conv2d(3, 8, 3, padding=1), nn.ReLU(), nn.AdaptiveAvgPool2d((1, 1)))
+        self.classifier = nn.Linear(8, 2)
+
+    def forward(self, batch: torch.Tensor) -&gt; torch.Tensor:
+        return self.classifier(self.features(batch).flatten(1))
+
+
+_attempts = 0
+
+
+@aura.heal
+def train_step(model: nn.Module, batch: torch.Tensor, target: torch.Tensor) -&gt; float:
+    """Demonstrate diagnosis of NCHW versus NHWC input and a repaired retry."""
+    global _attempts
+    _attempts += 1
+    if _attempts == 1:
+        # Deliberately provide NHWC data to an NCHW convolution.
+        model(batch.permute(0, 2, 3, 1))
+    else:
+        # The retry represents the fix identified by the model diagnosis.
+        batch = batch.contiguous()
+    prediction = model(batch)
+    loss = nn.functional.cross_entropy(prediction, target)
+    loss.backward()
+    return float(loss.detach())
+
+
+def main() -&gt; None:
+    aura.configure(provider="ollama", model="llama3", heal_retries=1)
+    rng = np.random.default_rng(7)
+    batch = torch.tensor(rng.normal(size=(4, 3, 16, 16)), dtype=torch.float32)
+    target = torch.tensor([0, 1, 0, 1])
+    model = TinyCNN()
+    try:
+        loss = train_step(model, batch, target)
+    except RuntimeError as exc:
+        print(f"The model diagnosis was logged, but the retry still needs a corrected batch: {exc}")
+        fixed_batch = batch.contiguous()
+        loss = float(nn.functional.cross_entropy(model(fixed_batch), target).detach())
+    print(f"NCHW batch shape: {tuple(batch.shape)}; training loss: {loss:.4f}")
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/02_fastapi_agent.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Fetches a web page, uses aura.parse() to turn it into a validated Article Pydantic model, and exposes the result over a small FastAPI service.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>"""Fetch text, parse it into Pydantic records, and expose a FastAPI endpoint.
+
+Run:
+    python -m pip install fastapi uvicorn requests pydantic
+    python examples/02_fastapi_agent.py
+"""
+
+from __future__ import annotations
+
+import os
+from typing import Any
+
+import requests
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+from god_ai import aura
+
+
+class Article(BaseModel):
+    title: str
+    summary: str
+    source_url: str
+
+
+app = FastAPI(title="God AI Structured Article API")
+_articles: list[Article] = []
+
+
+def fetch_text(url: str) -&gt; str:
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()
+    return response.text[:12000]
+
+
+def structure_article(raw: str, source_url: str) -&gt; Article:
+    parsed = aura.parse(
+        f"Extract a short title and summary from this web text:\n{raw}",
+        Article,
+    )
+    return parsed.model_copy(update={"source_url": source_url})
+
+
+@app.get("/articles", response_model=list[Article])
+def articles() -&gt; list[Article]:
+    return _articles
+
+
+@app.post("/articles/scrape", response_model=Article)
+def scrape(url: str) -&gt; Article:
+    try:
+        article = structure_article(fetch_text(url), url)
+    except (requests.RequestException, ValueError) as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    _articles.append(article)
+    return article
+
+
+def main() -&gt; None:
+    import uvicorn
+
+    aura.configure(
+        provider=os.getenv("AURA_PROVIDER", "ollama"),
+        model=os.getenv("AURA_MODEL", "llama3"),
+        base_url=os.getenv("AURA_BASE_URL", "http://localhost:11434/v1"),
+    )
+    uvicorn.run(app, host="127.0.0.1", port=int(os.getenv("PORT", "8001")))
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/03_resilient_microservice.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Computes a covariance matrix locally with NumPy while demonstrating the LLMClient provider fallback chain (primary provider to OpenRouter to Ollama).</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>"""Matrix service with model-provider fallback and NumPy processing.
+
+Run:
+    python -m pip install numpy
+    python examples/03_resilient_microservice.py
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+
+import numpy as np
+
+from god_ai import aura
+from god_ai.llm import LLMClient, LLMError
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
+
+def matrix_transform(matrix: np.ndarray) -&gt; np.ndarray:
+    """Use NumPy locally; the SDK remains available for model-assisted plans."""
+    centered = matrix - matrix.mean(axis=0, keepdims=True)
+    covariance = centered.T @ centered / max(1, matrix.shape[0] - 1)
+    return covariance
+
+
+def choose_provider() -&gt; None:
+    try:
+        client = LLMClient()
+        client.chat([{"role": "user", "content": "Reply with the active provider name only."}])
+        logging.info("Cloud/local provider responded successfully")
+    except LLMError as exc:
+        logging.warning("All configured providers failed: %s", exc)
+
+
+def main() -&gt; None:
+    aura.configure(
+        provider=os.getenv("AURA_PROVIDER", "openrouter"),
+        api_key=os.getenv("AURA_API_KEY", ""),
+        model=os.getenv("AURA_MODEL", "openrouter/auto"),
+        base_url=os.getenv("AURA_BASE_URL", ""),
+    )
+    choose_provider()
+    data = np.arange(12, dtype=float).reshape(4, 3)
+    covariance = matrix_transform(data)
+    print("Input matrix:\n", data)
+    print("Covariance matrix:\n", covariance)
+    print("Configured fallback chain: primary -&gt; OpenRouter -&gt; Ollama")
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/04_terminal_scaffolder.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Confirmation-gated scaffolder: writes a small dashboard (HTML/CSS/JS) to disk, then asks before starting a local HTTP server to preview it.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>"""Create and serve a responsive dashboard after a confirmation-gated prompt.
+
+Run:
+    python examples/04_terminal_scaffolder.py
+"""
+
+from __future__ import annotations
+
+import http.server
+import subprocess
+import socketserver
+from pathlib import Path
+
+
+
+HTML = """&lt;!doctype html&gt;&lt;html lang='en'&gt;&lt;head&gt;&lt;meta charset='utf-8'&gt;&lt;meta name='viewport' content='width=device-width,initial-scale=1'&gt;&lt;title&gt;God AI Dashboard&lt;/title&gt;&lt;link rel='stylesheet' href='style.css'&gt;&lt;/head&gt;&lt;body&gt;&lt;main&gt;&lt;p class='eyebrow'&gt;God AI&lt;/p&gt;&lt;h1&gt;Operations dashboard&lt;/h1&gt;&lt;section class='grid'&gt;&lt;article&gt;&lt;strong&gt;Revenue&lt;/strong&gt;&lt;b&gt;$42,840&lt;/b&gt;&lt;span&gt;+12.4%&lt;/span&gt;&lt;/article&gt;&lt;article&gt;&lt;strong&gt;Active users&lt;/strong&gt;&lt;b&gt;8,294&lt;/b&gt;&lt;span&gt;+8.1%&lt;/span&gt;&lt;/article&gt;&lt;article&gt;&lt;strong&gt;System status&lt;/strong&gt;&lt;b&gt;Healthy&lt;/b&gt;&lt;span&gt;All services online&lt;/span&gt;&lt;/article&gt;&lt;/section&gt;&lt;button id='refresh'&gt;Refresh metrics&lt;/button&gt;&lt;p id='status'&gt;&lt;/p&gt;&lt;/main&gt;&lt;script src='app.js'&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"""
+CSS = """*{box-sizing:border-box}body{margin:0;background:#101827;color:#edf2f7;font:16px system-ui,sans-serif}main{max-width:960px;margin:0 auto;padding:12vh 1.5rem}.eyebrow{color:#67e8f9;text-transform:uppercase;letter-spacing:.2em;font-size:.75rem}h1{font-size:clamp(2.4rem,7vw,5rem);margin:.2rem 0 3rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem}.grid article{background:#182438;border:1px solid #334155;border-radius:14px;padding:1.25rem;display:grid;gap:.7rem}.grid b{font-size:2rem}.grid span{color:#67e8f9}button{margin-top:2rem;padding:.8rem 1rem;border:0;border-radius:8px;background:#67e8f9;color:#082f49;font-weight:700}"""
+JS = """document.querySelector('#refresh').addEventListener('click',()=&gt;{document.querySelector('#status').textContent='Metrics refreshed at '+new Date().toLocaleTimeString()})"""
+
+
+def scaffold(root: Path) -&gt; Path:
+    project = root / "god-dashboard"
+    project.mkdir(parents=True, exist_ok=True)
+    (project / "index.html").write_text(HTML, encoding="utf-8")
+    (project / "style.css").write_text(CSS, encoding="utf-8")
+    (project / "app.js").write_text(JS, encoding="utf-8")
+    return project
+
+
+def main() -&gt; None:
+    instruction = "Create a responsive dashboard using Tailwind CSS and JavaScript"
+    print(f"Requested: {instruction}")
+    project = scaffold(Path.cwd())
+    command = "python -m http.server 8765"
+    if input(f"Run `{command}` in {project}? [Y/n] ").strip().lower() not in {"", "y", "yes"}:
+        print(f"Dashboard files are in {project}; server launch skipped.")
+        return
+    process = subprocess.Popen(command.split(), cwd=project)
+    print(f"Dashboard files are in {project}")
+    print("Serving at http://127.0.0.1:8765; press Ctrl+C to stop.")
+    try:
+        process.wait()
+    except KeyboardInterrupt:
+        process.terminate()
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+</div>
+</details>
+</div>
+<div class="example-group">
+<h3 class="example-group-title">1.1.0 extension examples</h3>
+<details class="example-card">
+<summary><code>examples/01_pytorch_neural_healer.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">A minimal PyTorch training loop stacked with @aura.heal and @aura.trace_exceptions to show both decorators composing on the same function.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import numpy as np
+import torch
+from torch import nn
+
+from god_ai import aura
+
+
+@aura.heal
+@aura.trace_exceptions
+def train_healer_example(batch_size: int = 8):
+    x = np.random.randn(batch_size, 4).astype(np.float32)
+    y = np.random.randn(batch_size, 2).astype(np.float32)
+    model = nn.Sequential(
+        nn.Linear(4, 8),
+        nn.ReLU(),
+        nn.Linear(8, 2),
+    )
+    loss_fn = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+    inputs = torch.tensor(x)
+    target = torch.tensor(y)
+    for _ in range(4):
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = loss_fn(outputs, target)
+        loss.backward()
+        optimizer.step()
+
+    if outputs.shape != target.shape:
+        raise ValueError(f"Tensor shape mismatch: {outputs.shape} vs {target.shape}")
+
+    return {"loss": float(loss.item()), "shape": list(outputs.shape)}
+
+
+if __name__ == "__main__":
+    result = train_healer_example()
+    print("pytorch neural healer:", result)
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/02_tensorflow_model_optimizer.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Trains a small Keras MNIST classifier under @aura.optimize and @aura.cost_profiler to report timing and an approximate cost figure.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import numpy as np
+
+try:
+    import tensorflow as tf
+except ImportError as exc:  # pragma: no cover
+    raise SystemExit("Install the aura extra: pip install 'god-ai[aura]' or install tensorflow") from exc
+
+from god_ai import aura
+
+
+@aura.optimize
+@aura.cost_profiler
+def build_and_train_classifier():
+    (x_train, y_train), _ = tf.keras.datasets.mnist.load_data()
+    x_train = x_train.astype("float32") / 255.0
+    y_train = tf.keras.utils.to_categorical(y_train, 10)
+
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Input((28, 28)),
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(128, activation="relu"),
+            tf.keras.layers.Dense(64, activation="relu"),
+            tf.keras.layers.Dense(10, activation="softmax"),
+        ]
+    )
+    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
+    history = model.fit(x_train[:2048], y_train[:2048], epochs=2, batch_size=64, verbose=0)
+    return {"accuracy": float(np.max(history.history["accuracy"])), "loss": float(np.min(history.history["loss"]))}
+
+
+if __name__ == "__main__":
+    print(build_and_train_classifier())
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/03_numpy_matrix_ghost.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Uses aura.do() to generate and safely execute a matrix-transform snippet from a natural-language instruction, then benchmarks a hand-written equivalent with @aura.benchmark.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import numpy as np
+
+from god_ai import aura
+
+
+context = {
+    "matrix": np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float64),
+    "vector": np.array([5.0, 6.0], dtype=np.float64),
+}
+
+
+result = aura.do(
+    "Create a matrix transform that returns the dot product of matrix and vector, then normalizes it, and assigns it to result.",
+    context=context,
+)
+
+print("matrix ghost result:", result)
+
+
+@aura.benchmark
+def matrix_transform(matrix: np.ndarray, vector: np.ndarray) -&gt; np.ndarray:
+    projected = matrix @ vector
+    normalized = projected / np.linalg.norm(projected)
+    return normalized
+
+
+if __name__ == "__main__":
+    sample = np.array([[2.0, 1.0], [0.5, 3.0]], dtype=np.float64)
+    vector = np.array([1.0, -1.0], dtype=np.float64)
+    print(matrix_transform(sample, vector))
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/04_fastapi_unstructured_parser.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Parses a block of unstructured text into a validated ExtractedRecord via aura.parse(), served through a FastAPI GET endpoint when FastAPI is installed.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>"""Parse unstructured text into a validated Pydantic record and serve it over FastAPI.
+
+Run:
+    python -m pip install fastapi uvicorn pydantic
+    python examples/04_fastapi_unstructured_parser.py
+"""
+
+from __future__ import annotations
+
+from pydantic import BaseModel, Field
+
+from god_ai import aura
+
+
+class ExtractedRecord(BaseModel):
+    title: str
+    summary: str
+    entities: list[str] = Field(default_factory=list)
+    priority: str = "medium"
+
+
+text_blob = """
+Acme Launches Edge Router
+The team completed beta testing for the new edge router in North America.
+Key stakeholders: product, infra, and security. This is a high-priority rollout.
+"""
+
+
+try:
+    from fastapi import FastAPI
+
+    app = FastAPI(title="Aura Unstructured Parser API")
+
+    @app.get("/parse")
+    def parse_endpoint() -&gt; dict[str, object]:
+        parsed = aura.parse(text_blob, ExtractedRecord)
+        return parsed.model_dump()
+except ImportError:  # pragma: no cover
+    app = None
+
+
+if __name__ == "__main__":
+    if app is None:
+        print(aura.parse(text_blob, ExtractedRecord))
+    else:
+        import uvicorn
+
+        uvicorn.run(app, host="127.0.0.1", port=8000)
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/05_flask_resilient_microservice.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">A Flask microservice whose /infer route calls aura.do() and always returns a response, falling back to a static message if generation fails.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import os
+from typing import Any
+
+from flask import Flask, jsonify, request
+
+from god_ai import aura
+
+app = Flask(__name__)
+
+DEFAULT_ENDPOINT = os.getenv("OLLAMA_URL", "http://localhost:11434/v1/chat/completions")
+
+
+@app.get("/health")
+def health() -&gt; dict[str, Any]:
+    return {"status": "ok", "provider": "local-ollama", "endpoint": DEFAULT_ENDPOINT}
+
+
+@app.post("/infer")
+def infer() -&gt; Any:
+    payload = request.get_json(silent=True) or {}
+    prompt = str(payload.get("prompt", "Explain the system health in one sentence."))
+    try:
+        result = aura.do(
+            "Return a one-sentence summary of the requested prompt and store it in result.",
+            context={"prompt": prompt},
+        )
+        return jsonify({"response": result, "fallback": False})
+    except Exception:
+        return jsonify({"response": f"Fall back: {prompt} is being processed by the resilience layer.", "fallback": True})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=False)
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/06_turtle_ai_generative_art.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Draws a radial geometric pattern with Python's standard-library turtle module -- no extra dependency, but needs a display.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import turtle
+
+from god_ai import aura
+
+
+def generate_art(command: str) -&gt; None:
+    screen = turtle.Screen()
+    screen.title("Aura Generative Art")
+    artist = turtle.Turtle()
+    artist.speed(0)
+    artist.penup()
+    artist.goto(-150, 0)
+    artist.pendown()
+
+    for index in range(12):
+        artist.forward(60)
+        artist.left(30)
+        artist.circle(25)
+
+    artist.hideturtle()
+    screen.onkey(lambda: screen.bye(), "q")
+    screen.listen()
+    screen.mainloop()
+
+
+if __name__ == "__main__":
+    generate_art("Create a radial geometric pattern")
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/07_autonomous_pytest_bot.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Runs aura.agent() against the repository's own test suite with edits disabled, printing whether pytest passed and how many iterations it took.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import subprocess
+import sys
+from pathlib import Path
+
+from god_ai import aura
+
+
+def run_bot() -&gt; None:
+    workspace = Path(__file__).resolve().parent.parent
+    result = aura.agent(
+        "Fix any failing pytest issues in the workspace while keeping behavior stable.",
+        root=workspace,
+        max_iterations=2,
+        allow_edits=False,
+    )
+    print(result.output)
+    print(f"passed={result.passed} iterations={result.iterations}")
+
+
+if __name__ == "__main__":
+    run_bot()
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/08_data_pipeline_transformer.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Cleans a small list of raw records with pandas/NumPy (trimming strings, dropping empty values) and then round-trips the cleaned JSON through aura.parse().</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+from god_ai import aura
+
+
+def clean_records(data: list[dict[str, object]]) -&gt; list[dict[str, object]]:
+    df = pd.DataFrame(data)
+    for column in df.columns:
+        if df[column].dtype == object:
+            df[column] = df[column].astype(str).str.strip()
+    df = df.replace({"": np.nan, None: np.nan})
+    df = df.dropna(how="any")
+    return df.to_dict(orient="records")
+
+
+sample = [{
+    "id": 1,
+    "name": " Alpha ",
+    "score": "88",
+    "country": "US",
+}, {
+    "id": 2,
+    "name": "Beta",
+    "score": "",
+    "country": "CA",
+}, {
+    "id": 3,
+    "name": "Gamma",
+    "score": "91",
+    "country": "US",
+}]
+
+if __name__ == "__main__":
+    cleaned = clean_records(sample)
+    print(json.dumps(cleaned, indent=2))
+    parsed = aura.parse(json.dumps(cleaned), None)
+    print(parsed)
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/09_multimodal_vision_generator.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Builds a structured boilerplate-project description from a plain-language prompt and validates it through aura.parse().</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import json
+import os
+
+from god_ai import aura
+
+
+def build_boilerplate_from_image_description(prompt: str) -&gt; dict[str, object]:
+    payload = {
+        "summary": prompt,
+        "language": "python",
+        "framework": "fastapi",
+        "components": ["routes", "models", "tests"],
+    }
+    parsed = aura.parse(json.dumps(payload), None)
+    return parsed if isinstance(parsed, dict) else {"summary": prompt}
+
+
+if __name__ == "__main__":
+    print(build_boilerplate_from_image_description("A dashboard with a sidebar, chart panel, and API route definitions."))
+</code></pre>
+</div>
+</details>
+<details class="example-card">
+<summary><code>examples/10_terminal_fullstack_scaffolder.py</code><span class="example-toggle-hint">click to expand</span></summary>
+<p class="example-desc">Scaffolds a minimal static HTML/CSS/JS project to disk and prints the resulting file manifest as JSON.</p>
+<div class="code-block">
+<button class="copy-code ghost-button" type="button" data-copy-target="true">Copy code</button>
+<pre><code>from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+from god_ai import aura
+
+
+def scaffold_project(project_name: str, root: Path | None = None) -&gt; dict[str, object]:
+    target = (root or Path.cwd()) / project_name
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "index.html").write_text("&lt;!doctype html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello from God AI&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;", encoding="utf-8")
+    (target / "styles.css").write_text("body{font-family:sans-serif;display:grid;place-items:center;height:100vh;}", encoding="utf-8")
+    (target / "app.js").write_text("document.body.insertAdjacentHTML('beforeend', '&lt;p&gt;Generated by God AI&lt;/p&gt;');", encoding="utf-8")
+    return {"path": str(target), "files": ["index.html", "styles.css", "app.js"]}
+
+
+if __name__ == "__main__":
+    project = scaffold_project("demo_web_app", Path(__file__).resolve().parent)
+    print(json.dumps(project, indent=2))
+</code></pre>
+</div>
+</details>
+</div>
+        </div>
+      </section>
+
+      <section id="credits" class="panel docs-section">
+        <div class="section-heading">
+          <p class="eyebrow">CREDITS</p>
+          <h2>Who built this</h2>
+          <p>The complete attribution on record in this project's own files.</p>
+        </div>
+        <div class="credits-grid">
+          <div class="credit-card">
+            <h4>Ayush Giri</h4>
+            <p>Author, maintainer, and copyright holder (per <code>LICENSE</code>). GitHub &amp; PyPI: <a href="https://github.com/ayushgiriai21-cmd" target="_blank" rel="noopener">@ayushgiriai21-cmd</a></p>
+          </div>
+          <div class="credit-card">
+            <h4>God AI Contributors</h4>
+            <p>Package author name recorded in <code>pyproject.toml</code>.</p>
+          </div>
+          <div class="credit-card">
+            <h4>Repository</h4>
+            <p><a href="https://github.com/ayushgiriai21-cmd/God" target="_blank" rel="noopener">github.com/ayushgiriai21-cmd/God</a></p>
+          </div>
         </div>
       </section>
     </main>
@@ -190,6 +1075,7 @@
     <footer class="footer panel">
       <span>God AI / Aura 1.1.0</span>
       <a href="https://github.com/ayushgiriai21-cmd/God">GitHub</a>
+      <a href="https://pypi.org/project/god-ai/">PyPI</a>
       <a href="../README.md">README</a>
     </footer>
 

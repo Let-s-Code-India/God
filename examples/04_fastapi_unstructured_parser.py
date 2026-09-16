@@ -1,3 +1,10 @@
+"""Parse unstructured text into a validated Pydantic record and serve it over FastAPI.
+
+Run:
+    python -m pip install fastapi uvicorn pydantic
+    python examples/04_fastapi_unstructured_parser.py
+"""
+
 from __future__ import annotations
 
 from pydantic import BaseModel, Field
@@ -19,11 +26,10 @@ Key stakeholders: product, infra, and security. This is a high-priority rollout.
 """
 
 
-app = FastAPI(title="Aura Unstructured Parser")
 try:
     from fastapi import FastAPI
 
-    app = FastAPI(title="Structured Parser API")
+    app = FastAPI(title="Aura Unstructured Parser API")
 
     @app.get("/parse")
     def parse_endpoint() -> dict[str, object]:

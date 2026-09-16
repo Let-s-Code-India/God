@@ -1,11 +1,17 @@
 """Public SDK for the God AI hybrid terminal assistant."""
 
+from __future__ import annotations
+
+from importlib import import_module
+
 from .config import GodConfig, configure, get_config
 from .decorators import heal
 from .ghost import GhostExecutionError, do
 from .llm import LLMClient, LLMError, LLMResponse
 from .system import SystemSnapshot, system
-from . import aura
+
+
+aura = import_module("god_ai.aura")
 
 
 class _GodFacade:
@@ -26,6 +32,7 @@ __all__ = [
     "LLMError",
     "LLMResponse",
     "SystemSnapshot",
+    "aura",
     "configure",
     "get_config",
     "god",
@@ -33,4 +40,4 @@ __all__ = [
     "do",
     "system",
 ]
-__version__ = "1.0.0"
+__version__ = "1.1.0"

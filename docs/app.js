@@ -1,1 +1,72 @@
-const providerData={openrouter:{label:'OpenRouter',copy:'Automatic routing across many models, with an optional free tier.',provider:'openrouter',model:'openrouter/auto',key:'your-openrouter-key'},openai:{label:'OpenAI',copy:'Hosted OpenAI models with automatic fallback when configured.',provider:'openai',model:'gpt-4o-mini',key:'your-openai-key'},gemini:{label:'Gemini',copy:'Google AI Studio models for fast multimodal workflows.',provider:'gemini',model:'gemini-2.0-flash',key:'your-gemini-key'},anthropic:{label:'Claude',copy:'Anthropic models for careful reasoning and long context.',provider:'anthropic',model:'claude-3-5-sonnet-latest',key:'your-anthropic-key'},groq:{label:'Groq',copy:'Fast OpenAI-compatible inference through Groq.',provider:'groq',model:'llama-3.1-8b-instant',key:'your-groq-key'},ollama:{label:'Ollama',copy:'Private local inference on your machine. No API key required.',provider:'ollama',model:'llama3',key:''}};let selected='openrouter';const $=s=>document.querySelector(s);function renderProvider(){const d=providerData[selected];$('.provider-copy').textContent=d.copy;$('#key').value=localStorage.getItem('god-key')||'';$('#model').value=d.model;$('#provider-code').textContent=`from god_ai import aura\n\naura.configure(\n    provider="${d.provider}",\n    api_key="${d.key}",\n    model="${d.model}",\n)`;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.provider===selected))}document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{selected=t.dataset.provider;renderProvider()}));$('#key').addEventListener('input',e=>localStorage.setItem('god-key',e.target.value));$('#model').addEventListener('input',e=>{providerData[selected].model=e.target.value;renderProvider()});document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>copy(b.dataset.copy||$('#provider-code').textContent,b)));$('#copy-config').addEventListener('click',e=>copy($('#provider-code').textContent,e.currentTarget));function copy(text,button){navigator.clipboard?.writeText(text);const old=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=old,1300)}const wizard=[['Install Ollama','Download Ollama from ollama.com, then open a new terminal.'],['Pull a model','Run `ollama run llama3`. The first run downloads the model.'],['Point Aura at it','Set provider to `ollama` and base URL to `http://localhost:11434/v1`.'],['Run your first task','Run `god "inspect this project"` or call `aura.do()` from Python.']];let step=0;function renderWizard(){$('#wizard-panel').innerHTML=`<h3>${wizard[step][0]}</h3><p>${wizard[step][1]}</p>`;document.querySelectorAll('#wizard-list li').forEach((x,i)=>x.classList.toggle('active',i===step));$('#previous').disabled=step===0;$('#next').textContent=step===wizard.length-1?'Restart':'Next'}$('#next').addEventListener('click',()=>{step=(step+1)%wizard.length;renderWizard()});$('#previous').addEventListener('click',()=>{step=(step-1+wizard.length)%wizard.length;renderWizard()});$('#run-heal').addEventListener('click',()=>{const out=$('#heal-output');out.textContent='1. captured RuntimeError: expected NCHW\n2. sent args + locals + traceback to provider\n3. retry succeeded after shape normalization';});$('#run-parse').addEventListener('click',()=>{$('#parse-output').textContent='input: "Ada is 36 years old"\nmodel: Person(name="Ada", age=36)\nstatus: validated';});$('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('#api-list article').forEach(x=>x.classList.toggle('hidden',!x.dataset.search.includes(q)))});$('#theme').addEventListener('click',()=>{document.body.classList.toggle('light');localStorage.setItem('god-theme',document.body.classList.contains('light')?'light':'dark')});if(localStorage.getItem('god-theme')==='light')document.body.classList.add('light');renderProvider();renderWizard();
+const providerData = {
+  openrouter: { label: "OpenRouter", copy: "Automatic routing across many models, with an optional free tier.", provider: "openrouter", model: "openrouter/auto", key: "your-openrouter-key" },
+  openai: { label: "OpenAI", copy: "Hosted OpenAI models with automatic fallback when configured.", provider: "openai", model: "gpt-4o-mini", key: "your-openai-key" },
+  gemini: { label: "Gemini", copy: "Google AI Studio models for fast multimodal workflows.", provider: "gemini", model: "gemini-2.0-flash", key: "your-gemini-key" },
+  anthropic: { label: "Claude", copy: "Anthropic models for careful reasoning and long context.", provider: "anthropic", model: "claude-3-5-sonnet-latest", key: "your-anthropic-key" },
+  groq: { label: "Groq", copy: "Fast OpenAI-compatible inference through Groq.", provider: "groq", model: "llama-3.1-8b-instant", key: "your-groq-key" },
+  ollama: { label: "Ollama", copy: "Private local inference on your machine. No API key required.", provider: "ollama", model: "llama3", key: "" }
+};
+
+let selectedProvider = "openrouter";
+let wizardStep = 0;
+const query = (selector) => document.querySelector(selector);
+
+function copyText(text, button) {
+  navigator.clipboard?.writeText(text);
+  const original = button.textContent;
+  button.textContent = "Copied";
+  window.setTimeout(() => { button.textContent = original; }, 1300);
+}
+
+function renderProvider() {
+  const provider = providerData[selectedProvider];
+  query("#provider-summary").textContent = provider.copy;
+  query("#provider-key").value = localStorage.getItem(`god-key-${selectedProvider}`) || "";
+  query("#provider-model").value = provider.model;
+  query("#provider-code").textContent = `from god_ai import aura\n\naura.configure(\n    provider="${provider.provider}",\n    api_key="${provider.key}",\n    model="${provider.model}",\n)`;
+  document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.provider === selectedProvider));
+}
+
+const wizard = [
+  ["Install a provider", "Install the core package with `python -m pip install god-ai`, then add a cloud extra or install Ollama locally."],
+  ["Choose a model", "Use a provider model ID in the Model field. Ollama needs a model pulled with `ollama pull llama3`."],
+  ["Configure Aura", "Copy the generated Python configuration or export AURA_PROVIDER, AURA_API_KEY, and AURA_MODEL in your shell."],
+  ["Run a task", "Start with `god \"inspect this project\"` or call `aura.do()` from a Python program."],
+];
+
+function renderWizard() {
+  const [title, description] = wizard[wizardStep];
+  query("#wizard-panel").innerHTML = `<h3>${title}</h3><p>${description}</p>`;
+  document.querySelectorAll("#wizard-list li").forEach((item, index) => item.classList.toggle("active", index === wizardStep));
+  query("#previous").disabled = wizardStep === 0;
+  query("#next").textContent = wizardStep === wizard.length - 1 ? "Restart" : "Next";
+}
+
+document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => {
+  selectedProvider = tab.dataset.provider;
+  renderProvider();
+}));
+
+query("#provider-key").addEventListener("input", (event) => localStorage.setItem(`god-key-${selectedProvider}`, event.target.value));
+query("#provider-model").addEventListener("input", (event) => {
+  providerData[selectedProvider].model = event.target.value;
+  renderProvider();
+});
+query("#copy-config").addEventListener("click", (event) => copyText(query("#provider-code").textContent, event.currentTarget));
+document.querySelectorAll("[data-copy]").forEach((button) => button.addEventListener("click", () => copyText(button.dataset.copy, button)));
+query("#next").addEventListener("click", () => { wizardStep = (wizardStep + 1) % wizard.length; renderWizard(); });
+query("#previous").addEventListener("click", () => { wizardStep = Math.max(0, wizardStep - 1); renderWizard(); });
+query("#run-heal").addEventListener("click", () => { query("#heal-output").textContent = "1. captured RuntimeError: expected NCHW\n2. sent args and traceback to provider\n3. retry succeeded after shape normalization"; });
+query("#run-parse").addEventListener("click", () => { query("#parse-output").textContent = 'input: "Ada is 36 years old"\nmodel: Person(name="Ada", age=36)\nstatus: validated'; });
+query("#search-input").addEventListener("input", (event) => {
+  const search = event.target.value.trim().toLowerCase();
+  document.querySelectorAll("#api-list article").forEach((item) => item.classList.toggle("hidden", !item.dataset.search.includes(search)));
+});
+query("#theme-toggle").addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem("god-theme", document.body.classList.contains("light") ? "light" : "dark");
+});
+
+if (localStorage.getItem("god-theme") === "light") document.body.classList.add("light");
+renderProvider();
+renderWizard();

@@ -1,14 +1,198 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="God AI 1.0 documentation"><title>God AI | Build with confidence</title><link rel="stylesheet" href="styles.css"></head>
-<body>
-<header class="topbar"><a class="brand" href="#top"><span class="mark">G</span> God AI</a><nav><a href="#quickstart">Quickstart</a><a href="#providers">Providers</a><a href="#playground">Playground</a><a href="#api">API</a></nav><button class="theme" id="theme" title="Toggle theme">☼</button></header>
-<main id="top">
-<section class="hero"><div class="hero-copy"><p class="eyebrow">GOD AI / AURA 1.0</p><h1>Your terminal, upgraded.</h1><p class="lede">A provider-resilient AI assistant for CLI workflows and typed Python automation, with local-model privacy built in.</p><div class="hero-actions"><button class="primary copy" data-copy="python -m pip install god-ai">Copy install command</button><a class="secondary" href="#quickstart">Read the guide <span>↓</span></a></div><div class="badges"><span>Python 3.9+</span><span>OpenRouter</span><span>Ollama ready</span><span>MIT</span></div></div><div class="architecture" aria-label="Architecture flow"><div class="node active">Your intent</div><div class="connector"></div><div class="node">Aura SDK</div><div class="connector"></div><div class="node split"><span>Cloud providers</span><span>Local models</span></div><div class="connector"></div><div class="node">Typed result</div></div></section>
-<section class="section" id="quickstart"><div class="section-heading"><p class="eyebrow">01 / START HERE</p><h2>Five minutes to your first answer.</h2></div><div class="steps"><article><b>01</b><h3>Install</h3><pre><code>python -m pip install god-ai</code></pre><button class="tiny copy" data-copy="python -m pip install god-ai">Copy</button></article><article><b>02</b><h3>Choose a provider</h3><p>Use a free OpenRouter key, or run a local model with Ollama. Nothing is hard-wired.</p><a href="#providers">Configure a provider →</a></article><article><b>03</b><h3>Ask</h3><pre><code>god "inspect this project"</code></pre><button class="tiny copy" data-copy='god "inspect this project"'>Copy</button></article></div></section>
-<section class="section providers" id="providers"><div class="section-heading"><p class="eyebrow">02 / CONNECT</p><h2>Pick your model home.</h2><p>Switch providers without changing your application code.</p></div><div class="provider-layout"><div class="tabs" role="tablist"><button class="tab active" data-provider="openrouter">OpenRouter</button><button class="tab" data-provider="openai">OpenAI</button><button class="tab" data-provider="gemini">Gemini</button><button class="tab" data-provider="anthropic">Claude</button><button class="tab" data-provider="groq">Groq</button><button class="tab" data-provider="ollama">Ollama</button></div><div class="configurator"><div class="provider-copy" id="provider-copy"></div><label>API key <input id="key" placeholder="optional for Ollama"></label><label>Model <input id="model"></label><pre><code id="provider-code"></code></pre><button class="primary copy" id="copy-config">Copy Python configuration</button></div></div></section>
-<section class="section wizard"><div class="section-heading"><p class="eyebrow">03 / SET UP</p><h2>Local model wizard.</h2></div><div class="wizard-grid"><ol id="wizard-list"><li class="active">Install Ollama</li><li>Pull a model</li><li>Point Aura at it</li><li>Run your first task</li></ol><div class="wizard-panel"><div id="wizard-panel"></div><div class="wizard-controls"><button class="secondary" id="previous">Previous</button><button class="primary" id="next">Next</button></div></div></div></section>
-<section class="section playground" id="playground"><div class="section-heading"><p class="eyebrow">04 / SEE IT WORK</p><h2>Two superpowers. One runtime.</h2></div><div class="playground-grid"><article class="demo"><div class="demo-head"><span>@aura.heal</span><button class="tiny" id="run-heal">Run simulation</button></div><pre><code id="heal-output">Click run to simulate a captured traceback and retry.</code></pre></article><article class="demo"><div class="demo-head"><span>aura.parse()</span><button class="tiny" id="run-parse">Run simulation</button></div><pre><code id="parse-output">Click run to parse unstructured text into a model.</code></pre></article></div></section>
-<section class="section api" id="api"><div class="section-heading"><p class="eyebrow">05 / REFERENCE</p><h2>Find the API you need.</h2><input id="search" class="search" placeholder="Search heal, agent, parse, --free..."></div><div id="api-list" class="api-list"><article data-search="configure provider api key local ollama"><code>aura.configure(...)</code><p>Set provider, model, API key, endpoint, retries, and free-tier routing.</p></article><article data-search="heal decorator traceback retry"><code>@aura.heal</code><p>Capture arguments, locals, source, and traceback; request diagnosis and retry safely.</p></article><article data-search="do ghost ast sandbox"><code>aura.do(instruction, context)</code><p>Generate guarded in-memory Python and return the typed result.</p></article><article data-search="agent pytest patch edits"><code>aura.agent(goal, root, max_iterations, allow_edits)</code><p>Run a bounded test-and-repair loop with opt-in unified diff application.</p></article><article data-search="optimize profile performance"><code>@aura.optimize</code><p>Profile slow calls and log an actionable optimization suggestion.</p></article><article data-search="parse pydantic json"><code>aura.parse(text, Model)</code><p>Turn unstructured text into JSON or a validated Pydantic object.</p></article><article data-search="god free cli web"><code>god [--free] [--web] prompt</code><p>Use the autonomous terminal interface with confirmation-gated commands.</p></article></div></section>
-</main><footer><span>God AI / AURA 1.0</span><a href="https://github.com/ayushgiriai21-cmd/God">GitHub</a><a href="../README.md">README</a></footer><script src="app.js"></script>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>God AI / Aura 1.1.0</title>
+    <meta name="description" content="God AI v1.1.0 documentation portal for the Aura ecosystem." />
+    <link rel="icon" type="image/png" href="assets/favicon_64x64.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-wrap">
+        <img src="assets/logo_255x255.png" alt="God AI logo" class="brand-logo" />
+        <div>
+          <div class="brand-name">God AI</div>
+          <div class="brand-sub">AURA 1.1.0</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#overview">Overview</a>
+        <a href="#providers">Providers</a>
+        <a href="#playground">Playground</a>
+        <a href="#projects">Projects</a>
+        <a href="#api">API</a>
+      </nav>
+      <button id="theme-toggle" class="ghost-button" type="button" aria-label="Toggle theme">☼</button>
+    </header>
+
+    <main>
+      <section id="overview" class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">V1.1.0 / AURA CORE ECOSYSTEM</p>
+          <h1>Developer automation with self-healing AI built in.</h1>
+          <p class="lede">
+            God AI blends a terminal-first CLI, a typed Python SDK, and a web dashboard into one resilient workflow runner for local and cloud LLMs.
+          </p>
+          <div class="cta-row">
+            <button class="primary-button" data-copy="python -m pip install god-ai" type="button">Copy install</button>
+            <a class="secondary-button" href="#api">Explore API</a>
+          </div>
+          <div class="badges">
+            <span>PyPI v1.1.0</span>
+            <span>MIT</span>
+            <span>Python 3.9+</span>
+            <span>Ollama ready</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="stack">
+            <div class="node node-core">Intent</div>
+            <div class="node node-sdk">Aura SDK</div>
+            <div class="node node-cloud">Cloud models</div>
+            <div class="node node-local">Local models</div>
+            <div class="node node-result">Workspace output</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="search-panel panel">
+        <label for="search-input" class="sr-only">Search functions and docs</label>
+        <input id="search-input" type="search" placeholder="Search for heal, parse, agent, CLI, provider, optimize..." />
+      </section>
+
+      <section id="providers" class="panel docs-section">
+        <div class="section-heading">
+          <p class="eyebrow">PROVIDERS</p>
+          <h2>Model providers and setup wizard</h2>
+        </div>
+        <div class="provider-layout">
+          <div class="provider-tabs" id="provider-tabs">
+            <button class="tab active" data-provider="openrouter" type="button">OpenRouter</button>
+            <button class="tab" data-provider="openai" type="button">OpenAI</button>
+            <button class="tab" data-provider="gemini" type="button">Gemini</button>
+            <button class="tab" data-provider="anthropic" type="button">Claude</button>
+            <button class="tab" data-provider="groq" type="button">Groq</button>
+            <button class="tab" data-provider="ollama" type="button">Ollama</button>
+          </div>
+          <div class="wizard-box">
+            <div id="provider-summary" class="provider-summary"></div>
+            <label>
+              API key
+              <input id="provider-key" type="password" placeholder="optional for local providers" />
+            </label>
+            <label>
+              Model
+              <input id="provider-model" type="text" value="openrouter/auto" />
+            </label>
+            <pre id="provider-code"></pre>
+            <button class="primary-button" id="copy-config" type="button">Copy Python config</button>
+            <ol class="wizard-list" id="wizard-list">
+              <li>Install a provider</li>
+              <li>Choose a model</li>
+              <li>Configure Aura</li>
+              <li>Run a task</li>
+            </ol>
+            <div class="wizard-panel" id="wizard-panel"></div>
+            <div class="wizard-controls">
+              <button class="ghost-button" id="previous" type="button">Previous</button>
+              <button class="ghost-button" id="next" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="playground" class="panel docs-section">
+        <div class="section-heading">
+          <p class="eyebrow">PLAYGROUND</p>
+          <h2>Interactive examples</h2>
+        </div>
+        <div class="playground-grid">
+          <article class="demo-card">
+            <div class="demo-header">
+              <span>@aura.heal</span>
+              <button class="ghost-button" id="run-heal" type="button">Run simulation</button>
+            </div>
+            <pre id="heal-output">A failing routine is captured, diagnosed, and retried automatically.</pre>
+          </article>
+          <article class="demo-card">
+            <div class="demo-header">
+              <span>aura.parse()</span>
+              <button class="ghost-button" id="run-parse" type="button">Run simulation</button>
+            </div>
+            <pre id="parse-output">Unstructured text becomes structured JSON and validated Pydantic output.</pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="projects" class="panel docs-section">
+        <div class="section-heading">
+          <p class="eyebrow">PROJECTS</p>
+          <h2>10 production-ready blueprints</h2>
+        </div>
+        <div class="project-list" id="project-list">
+          <article class="project-item">01. PyTorch neural healer</article>
+          <article class="project-item">02. TensorFlow model optimizer</article>
+          <article class="project-item">03. NumPy matrix ghost</article>
+          <article class="project-item">04. FastAPI parser</article>
+          <article class="project-item">05. Flask microservice</article>
+          <article class="project-item">06. Turtle generative art</article>
+          <article class="project-item">07. Pytest autonomous repair bot</article>
+          <article class="project-item">08. Data pipeline transformer</article>
+          <article class="project-item">09. Multimodal vision generator</article>
+          <article class="project-item">10. Full-stack scaffolder</article>
+        </div>
+      </section>
+
+      <section id="api" class="panel docs-section">
+        <div class="section-heading">
+          <p class="eyebrow">API</p>
+          <h2>SDK reference</h2>
+        </div>
+        <div id="api-list" class="api-list">
+          <article data-search="configure provider env local openrouter api key">
+            <code>aura.configure(...)</code>
+            <p>Set provider, key, model, endpoint, request timeout, and local fallback behavior.</p>
+          </article>
+          <article data-search="heal decorator retry traceback runtime diagnosis">
+            <code>@aura.heal</code>
+            <p>Capture failing function state, request a root-cause diagnosis, and retry once or more.</p>
+          </article>
+          <article data-search="trace exceptions logging root cause">
+            <code>aura.trace_exceptions</code>
+            <p>Wrap functions and emit runtime diagnostics with structured traceback context.</p>
+          </article>
+          <article data-search="do ghost execution sandbox ast allowed">
+            <code>aura.do(...)</code>
+            <p>Generate and execute guarded Python in a restricted sandbox with AST validation.</p>
+          </article>
+          <article data-search="parse pydantic json model validation">
+            <code>aura.parse(...)</code>
+            <p>Turn unstructured text into valid JSON or a typed Pydantic object.</p>
+          </article>
+          <article data-search="optimize benchmark cost profiler speed">
+            <code>@aura.optimize</code>
+            <p>Profile function execution and log optimization suggestions without changing behavior.</p>
+          </article>
+          <article data-search="agent pytest repair patch diff">
+            <code>aura.agent(...)</code>
+            <p>Run a bounded test-and-fix loop with optional diff-based patching.</p>
+          </article>
+          <article data-search="god cli prompt web free">
+            <code>god --web</code>
+            <p>Launch the local web dashboard or execute prompts in a confirmation-gated shell workflow.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer panel">
+      <span>God AI / Aura 1.1.0</span>
+      <a href="https://github.com/ayushgiriai21-cmd/God">GitHub</a>
+      <a href="../README.md">README</a>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

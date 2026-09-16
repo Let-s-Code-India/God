@@ -1129,7 +1129,7 @@ python -m twine check dist/*
 
 ## Release process
 
-**v1.1.1 is tagged and published to PyPI.** Create the corresponding GitHub release from the existing tag, then use the same tag-triggered workflow for future version bumps.
+**v1.1.1 is tagged, published to PyPI, and available as a GitHub Release.** Future version bumps should use the same tag-triggered workflow.
 
 The workflow `.github/workflows/publish.yml` triggers on any pushed tag matching `v*`. It checks out the source, sets up Python 3.12, installs `build`, `twine`, `pillow`, and `cairosvg`, regenerates the logo assets, builds the sdist and wheel with `python -m build`, validates both with `python -m twine check dist/*`, and publishes them to PyPI via `pypa/gh-action-pypi-publish` using the `PYPI_API_TOKEN` repository secret.
 

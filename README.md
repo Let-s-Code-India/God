@@ -1,7 +1,7 @@
 # God AI / AURA 1.1.0
 
 <p align="center">
-  <img src="assets/logo_255x255.png" alt="God AI logo" width="180" />
+  <img src="assets/logo.svg" alt="God AI logo" width="180" />
 </p>
 
 <p align="center">

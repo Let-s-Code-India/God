@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "godai"
-version = "2.0.0"
+version = "1.0.0"
 description = "Resilient AI tooling with decorators, coding analysis, provider resilience, and integrations"
 readme = "README.md"
 requires-python = ">=3.9"

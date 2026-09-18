@@ -10,7 +10,7 @@
   <a href="https://pypi.org/project/godai/"><img src="https://img.shields.io/pypi/v/godai.svg" alt="PyPI version"></a>
   <a href="https://github.com/ayushgiriai21-cmd/God/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ayushgiriai21-cmd/God.svg" alt="MIT license"></a>
   <img src="https://img.shields.io/pypi/pyversions/godai.svg" alt="Python versions">
-  <a href="https://github.com/ayushgiriai21-cmd/God/actions"><img src="https://img.shields.io/github/actions/workflow/status/ayushgiriai21-cmd/God/ci.yml?label=CI" alt="CI status"></a>
+  <a href="https://github.com/ayushgiriai21-cmd/God/actions"><img src="https://img.shields.io/github/actions/workflow/status/ayushgiriai21-cmd/God/publish.yml?label=Publish" alt="Publish status"></a>
 </p>
 
 `godai` is one installable package with four deliberately independent sub-libraries. Importing the root stays cheap: `aura`, `nexus`, `aether`, and `apex` load lazily on first access.

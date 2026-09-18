@@ -7,9 +7,9 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/godai/"><img src="https://img.shields.io/pypi/v/godai.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/godaix/"><img src="https://img.shields.io/pypi/v/godaix.svg" alt="PyPI version"></a>
   <a href="https://github.com/ayushgiriai21-cmd/God/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ayushgiriai21-cmd/God.svg" alt="MIT license"></a>
-  <img src="https://img.shields.io/pypi/pyversions/godai.svg" alt="Python versions">
+  <img src="https://img.shields.io/pypi/pyversions/godaix.svg" alt="Python versions">
   <a href="https://github.com/ayushgiriai21-cmd/God/actions"><img src="https://img.shields.io/github/actions/workflow/status/ayushgiriai21-cmd/God/publish.yml?label=Publish" alt="Publish status"></a>
 </p>
 
@@ -26,7 +26,7 @@ The package is authored by **Ayush Giri**. The verified repository is [github.co
 
 ## Dependencies
 
-`pip install godai` installs these dependencies together. They are normal project dependencies, not optional extras.
+`pip install godaix` installs these dependencies together. They are normal project dependencies, not optional extras.
 
 | Dependency | Purpose |
 | --- | --- |
@@ -53,7 +53,7 @@ Use a virtual environment, especially on Linux distributions that enforce PEP 66
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install godai
+python -m pip install godaix
 ```
 
 Windows PowerShell equivalent:
@@ -61,7 +61,7 @@ Windows PowerShell equivalent:
 ```powershell
 py -m venv .venv
 .venv\Scripts\Activate.ps1
-python -m pip install godai
+python -m pip install godaix
 ```
 
 ### Installing on Termux (Android)
@@ -76,7 +76,7 @@ apt update && apt upgrade -y
 apt install -y python3 python3-pip python3-venv
 python3 -m venv godenv
 source godenv/bin/activate
-pip install godai
+pip install godaix
 ```
 
 During `apt upgrade`, `tzdata` may show a timezone prompt. Select your geographic area and city when prompted. On a non-interactive setup, set `DEBIAN_FRONTEND=noninteractive` and `TZ=UTC` before the upgrade, or run `dpkg-reconfigure tzdata` later.
@@ -98,7 +98,7 @@ Newer Debian and Ubuntu installations may reject system-wide pip writes. Create 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install godai
+python -m pip install godaix
 ```
 
 Do not remove the distribution's `EXTERNALLY-MANAGED` marker. `pip install --break-system-packages` is a last-resort system choice, not the recommended installation path.
@@ -115,7 +115,7 @@ If pip reports `ResolutionImpossible`, inspect the first conflicting requirement
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools wheel
-python -m pip install godai
+python -m pip install godaix
 ```
 
 ### Alpine, musl, emulated, or unusual architectures

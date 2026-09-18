@@ -1,87 +1,26 @@
-const providerData = {
-  openrouter: { label: "OpenRouter", copy: "Automatic routing across many models, with an optional free tier.", provider: "openrouter", model: "openrouter/auto", key: "your-openrouter-key" },
-  openai: { label: "OpenAI", copy: "Hosted OpenAI models with automatic fallback when configured.", provider: "openai", model: "gpt-4o-mini", key: "your-openai-key" },
-  gemini: { label: "Gemini", copy: "Google AI Studio models for fast multimodal workflows.", provider: "gemini", model: "gemini-2.0-flash", key: "your-gemini-key" },
-  anthropic: { label: "Claude", copy: "Anthropic models for careful reasoning and long context.", provider: "anthropic", model: "claude-3-5-sonnet-latest", key: "your-anthropic-key" },
-  groq: { label: "Groq", copy: "Fast OpenAI-compatible inference through Groq.", provider: "groq", model: "llama-3.1-8b-instant", key: "your-groq-key" },
-  ollama: { label: "Ollama", copy: "Private local inference on your machine. No API key required.", provider: "ollama", model: "llama3", key: "" }
+const api = {
+  aura: { title: "Aura", tone: "coral", description: "Decorators for healing, observing, validating, and controlling Python calls.", members: [
+    ["heal", "Diagnose failures, retry them, and preserve the original exception.", "@aura.heal(retries=1)\ndef add(a, b): return a + b"], ["patch", "Request a source repair, validate it, and execute it in a small namespace.", "@aura.patch()\ndef value(): return 7"], ["retry", "Retry transient network-like errors while failing fast on logic errors.", "@aura.retry(retries=2)\ndef fetch(): return \"ready\""], ["validate", "Validate arguments and return values using Pydantic or dictionary schemas.", "@aura.validate(output_schema=dict)\ndef result(): return {\"ok\": True}"], ["trace", "Log arguments, result, exception, and elapsed time as structured data.", "@aura.trace\ndef greet(name): return f\"Hi {name}\""], ["cache", "Memoize results, optionally normalizing string whitespace for near matches.", "@aura.cache(semantic=True)\ndef clean(text): return text.strip()"], ["async_heal", "Async counterpart to heal for coroutine functions.", "@aura.async_heal()\nasync def work(): return \"done\""], ["sandbox", "Run a function with a restricted builtins mapping when it accepts no globals.", "@aura.sandbox\ndef safe_sum(): return sum(range(4))"], ["explain", "Attach a plain-English explanation to exceptions as a note.", "@aura.explain\ndef fail(): raise ValueError(\"demo\")"], ["benchmark", "Measure wrapper overhead and function duration in a structured log.", "@aura.benchmark\ndef calculate(): return sum(range(10))"], ["guard", "Block a call with a clear message when prerequisites are absent.", "@aura.guard(env=())\ndef run(): return \"allowed\""], ["dry_run", "Mark a call as dry-run and expose intercepted side-effect names to logs.", "@aura.dry_run()\ndef publish(): return \"preview\""], ["audit", "Write calls, failures, and successful results to a JSON-lines audit log.", "@aura.audit(path=\"/tmp/godai.jsonl\")\ndef save(): return True"], ["fallback", "Return a fallback function or default value after the primary fails.", "@aura.fallback(default=\"offline\")\ndef provider(): raise OSError()"], ["rate_limit", "Throttle calls using a token bucket shared by one decorated function.", "@aura.rate_limit(rate=2, capacity=1)\ndef call(): return \"ok\""],
+  ] },
+  nexus: { title: "Nexus", tone: "violet", description: "Direct-call coding analysis helpers with useful offline behavior.", members: [
+    ["explain", "Turn an exception or traceback into a concise plain-English diagnosis.", "nexus.explain(KeyError(\"name\"))"], ["parse", "Extract schema-shaped data from text, using JSON-like key matching offline.", "nexus.parse(\"name: Ada\", Person)"], ["agent", "Inspect a project and optionally apply narrowly scoped provider-generated edits.", "nexus.agent(\"inspect\", \".\", allow_edits=False)"], ["summarize", "Summarize functions, classes, imports, and the public shape of Python code.", "nexus.summarize(\"def hello(): return 1\")"], ["review", "Return concrete review comments for risky unified-diff patterns.", "nexus.review(\"+ eval(user_input)\")"], ["test_gen", "Generate a runnable pytest skeleton from a callable's signature.", "nexus.test_gen(my_function)"], ["docstring", "Generate a concise docstring from a function signature and body.", "nexus.docstring(my_function)"], ["translate", "Provide a provider-backed translation request with a useful offline marker.", "nexus.translate(\"x = 1\", \"javascript\")"], ["refactor", "Suggest a refactor toward a stated goal while preserving the input code offline.", "nexus.refactor(\"x=1\", \"clarity\")"], ["complexity", "Estimate cyclomatic complexity fully offline from Python syntax.", "nexus.complexity(\"def f(x):\\n if x: return 1\")"], ["security_scan", "Flag high-signal insecure constructs offline and request deeper review when online.", "nexus.security_scan(\"password = 'secret'\")"], ["dependency_check", "Find imports in a file and list likely missing requirements entries.", "nexus.dependency_check(\"module.py\")"], ["commit_message", "Generate a conventional commit subject from a diff.", "nexus.commit_message(\"fix timeout\")"], ["changelog", "Format commit subjects as a compact changelog entry.", "nexus.changelog([\"fix timeout\"])"], ["ask", "Answer a question scoped strictly to supplied codebase context.", "nexus.ask(\"What is this?\", \"x = 1\")"],
+  ] },
+  aether: { title: "Aether", tone: "blue", description: "Bounded resilience, offline operation, and performance utilities.", members: [
+    ["timeout", "Enforce a deadline for a callable or context-managed operation.", "@aether.timeout(1)\ndef fast(): return \"ok\""], ["circuit_breaker", "Open a provider circuit after consecutive failures for a cooldown.", "breaker = aether.circuit_breaker(\"api\")\nbreaker.call(fetch)"], ["offline_queue", "Persist failed JSON requests in SQLite for later replay.", "queue = aether.offline_queue(\"queue.sqlite3\")\nqueue.put({\"x\": 1})"], ["heuristics", "Diagnose common Python exceptions without network access.", "aether.heuristics(KeyError(\"x\"))"], ["fallback_provider", "Try configured providers in order and return the first successful result.", "aether.fallback_provider([local, hosted])"], ["degraded_mode", "Detect unavailable network and log a clear degraded-mode warning.", "is_offline = aether.degraded_mode()"], ["lazy_load", "Import a heavy module only when requested and optionally return an attribute.", "json = aether.lazy_load(\"json\")"], ["zero_overhead", "Benchmark a decorated fast path and return measured per-call overhead.", "aether.zero_overhead(iterations=100)"], ["network_probe", "Measure connection latency and recommend bounded retry settings.", "aether.network_probe(\"127.0.0.1\", 9)"], ["missing_dependency_helper", "Raise an actionable installation message for an expected package.", "aether.missing_dependency_helper(\"json\")"], ["cache_store", "Provide bounded TTL caching for diagnosis and patch results in memory and JSON.", "store = aether.cache_store(\"cache.json\")\nstore.put(\"x\", 1)"], ["debounce", "Suppress identical error-trigger calls inside a time window.", "@aether.debounce(10)\ndef notify(): return True"], ["status", "Return current provider, connectivity, degradation, and circuit status.", "aether.status()"], ["rust_core", "Use a future compiled extension when present, otherwise reference Python.", "aether.rust_core(\"sum\", [1, 2])"], ["config", "Centralize timeout, retry, circuit, and cache settings.", "settings = aether.config()\nsettings.as_dict()"],
+  ] },
+  apex: { title: "Apex", tone: "gold", description: "Integrations and operational tooling for teams.", members: [
+    ["pytest_plugin", "Return a pytest hook plugin that diagnoses failed test reports.", "pytest_plugins = [apex.pytest_plugin()]"], ["pre_commit_hook", "Review staged Python diffs and return a hook-compatible status code.", "exit_code = apex.pre_commit_hook([])"], ["github_action", "Post review suggestions to GitHub using a token supplied by the environment.", "apex.github_action(diff, issue=42)"], ["django_middleware", "Create Django middleware that logs diagnosis and re-raises exceptions.", "Middleware = apex.django_middleware(get_response)"], ["flask_middleware", "Register a Flask exception handler with a plain-English diagnosis.", "apex.flask_middleware(app)"], ["fastapi_middleware", "Add FastAPI middleware that observes unhandled failures.", "apex.fastapi_middleware(app)"], ["cli", "Run fix, explain, or agent commands from a small standard-library CLI.", "apex.cli([\"explain\", \"bad input\"])"], ["vscode_extension", "Serve a documented JSON-RPC-style endpoint for a future editor extension.", "apex.vscode_extension(host=\"127.0.0.1\", port=8765)"], ["redact", "Remove likely secrets and PII before code leaves the process.", "safe = apex.redact(\"api_key=secret\")"], ["on_prem", "Describe a self-hosted provider endpoint without contacting it.", "apex.on_prem(\"http://localhost:8000\")"], ["multi_tenant", "Manage named tenant keys and in-process usage counters.", "tenants = apex.multi_tenant()\ntenants.add(\"team\", \"key\")"], ["shared_cache", "Return a cache adapter using a supplied shared backend or local dictionary.", "cache = apex.shared_cache()\ncache[\"put\"](\"x\", 1)"], ["metrics", "Expose Prometheus-compatible counters and latency observations.", "metrics = apex.metrics()\nmetrics.observe(\"heal\", .01)"], ["dashboard", "Render a minimal local HTML dashboard from audit events.", "html = apex.dashboard(\"godai-audit.jsonl\")"], ["docker_ready", "Validate environment-only container configuration without prompting.", "apex.docker_ready(required=())"],
+  ] },
 };
-
-let selectedProvider = "openrouter";
-let wizardStep = 0;
-const query = (selector) => document.querySelector(selector);
-
-function copyText(text, button) {
-  navigator.clipboard?.writeText(text);
-  const original = button.textContent;
-  button.textContent = "Copied";
-  window.setTimeout(() => { button.textContent = original; }, 1300);
-}
-
-function renderProvider() {
-  const provider = providerData[selectedProvider];
-  query("#provider-summary").textContent = provider.copy;
-  query("#provider-key").value = localStorage.getItem(`god-key-${selectedProvider}`) || "";
-  query("#provider-model").value = provider.model;
-  query("#provider-code").textContent = `from god_ai import aura\n\naura.configure(\n    provider="${provider.provider}",\n    api_key="${provider.key}",\n    model="${provider.model}",\n)`;
-  document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.provider === selectedProvider));
-}
-
-const wizard = [
-  ["Install a provider", "Install the core package with `python -m pip install god-ai`, then add a cloud extra or install Ollama locally."],
-  ["Choose a model", "Use a provider model ID in the Model field. Ollama needs a model pulled with `ollama pull llama3`."],
-  ["Configure Aura", "Copy the generated Python configuration or export AURA_PROVIDER, AURA_API_KEY, and AURA_MODEL in your shell."],
-  ["Run a task", "Start with `god \"inspect this project\"` or call `aura.do()` from a Python program."],
-];
-
-function renderWizard() {
-  const [title, description] = wizard[wizardStep];
-  query("#wizard-panel").innerHTML = `<h3>${title}</h3><p>${description}</p>`;
-  document.querySelectorAll("#wizard-list li").forEach((item, index) => item.classList.toggle("active", index === wizardStep));
-  query("#previous").disabled = wizardStep === 0;
-  query("#next").textContent = wizardStep === wizard.length - 1 ? "Restart" : "Next";
-}
-
-document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => {
-  selectedProvider = tab.dataset.provider;
-  renderProvider();
-}));
-
-query("#provider-key").addEventListener("input", (event) => localStorage.setItem(`god-key-${selectedProvider}`, event.target.value));
-query("#provider-model").addEventListener("input", (event) => {
-  providerData[selectedProvider].model = event.target.value;
-  renderProvider();
-});
-query("#copy-config").addEventListener("click", (event) => copyText(query("#provider-code").textContent, event.currentTarget));
+const $ = (selector) => document.querySelector(selector);
+const providers = ["offline", "openai", "anthropic", "gemini", "groq", "ollama", "openrouter", "qwen", "xai", "openai_compatible"];
+function renderProviders() { $("#provider-grid").innerHTML = providers.map((provider, index) => `<div class="provider-pill"><span class="provider-number">${String(index + 1).padStart(2, "0")}</span><strong>${provider}</strong><code>${provider === "offline" ? "no key required" : "GODAI_PROVIDER=" + provider}</code></div>`).join(""); }
+function renderApi(filter = "") { const needle = filter.toLowerCase().trim(); let matches = 0; $("#api-list").innerHTML = Object.entries(api).map(([key, group]) => { const entries = group.members.filter(([name, description, example]) => !needle || `${key} ${name} ${description} ${example}`.toLowerCase().includes(needle)); matches += entries.length; if (!entries.length) return ""; return `<section class="api-group" id="${key}"><div class="api-group-head"><div><span class="module-dot ${group.tone}"></span><h3>${group.title}</h3></div><span>${entries.length} / 15</span></div><p class="group-description">${group.description}</p><div class="api-cards">${entries.map(([name, description, example]) => `<article class="api-card"><div class="api-name"><code>${key}.${name}</code><span>PUBLIC</span></div><p>${description}</p><pre><code>${escapeHtml(example)}</code></pre><button class="copy-button" data-copy="${escapeAttr(example)}">Copy example</button></article>`).join("")}</div></section>`; }).join(""); $("#no-results").hidden = matches !== 0; document.querySelectorAll(".copy-button").forEach((button) => button.addEventListener("click", () => copyText(button.dataset.copy, button))); }
+function escapeHtml(value) { return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"); }
+function escapeAttr(value) { return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;"); }
+function copyText(text, button) { navigator.clipboard?.writeText(text); const original = button.textContent; button.textContent = "Copied"; setTimeout(() => { button.textContent = original; }, 1000); }
+$("#search-input").addEventListener("input", (event) => renderApi(event.target.value));
+$("#menu-toggle").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
+document.querySelectorAll(".sidebar a").forEach((link) => link.addEventListener("click", () => $("#sidebar").classList.remove("open")));
 document.querySelectorAll("[data-copy]").forEach((button) => button.addEventListener("click", () => copyText(button.dataset.copy, button)));
-query("#next").addEventListener("click", () => { wizardStep = (wizardStep + 1) % wizard.length; renderWizard(); });
-query("#previous").addEventListener("click", () => { wizardStep = Math.max(0, wizardStep - 1); renderWizard(); });
-query("#run-heal").addEventListener("click", () => { query("#heal-output").textContent = "1. captured RuntimeError: expected NCHW\n2. sent args and traceback to provider\n3. retry succeeded after shape normalization"; });
-query("#run-parse").addEventListener("click", () => { query("#parse-output").textContent = 'input: "Ada is 36 years old"\nmodel: Person(name="Ada", age=36)\nstatus: validated'; });
-query("#search-input").addEventListener("input", (event) => {
-  const search = event.target.value.trim().toLowerCase();
-  document.querySelectorAll("#api-list-wrap .api-list article").forEach((item) => {
-    const matches = !search || (item.dataset.search || "").includes(search);
-    item.classList.toggle("hidden", !matches);
-  });
-  document.querySelectorAll("#api-list-wrap .api-group").forEach((group) => {
-    const visible = group.querySelectorAll(".api-list article:not(.hidden)").length > 0;
-    group.style.display = visible ? "" : "none";
-  });
-});
-
-document.querySelectorAll(".copy-code").forEach((button) => {
-  button.addEventListener("click", () => {
-    const codeBlock = button.parentElement.querySelector("pre code");
-    if (codeBlock) copyText(codeBlock.textContent, button);
-  });
-});
-
-query("#theme-toggle").addEventListener("click", () => {
-  document.body.classList.toggle("light");
-  localStorage.setItem("god-theme", document.body.classList.contains("light") ? "light" : "dark");
-});
-
-if (localStorage.getItem("god-theme") === "light") document.body.classList.add("light");
-renderProvider();
-renderWizard();
+renderProviders(); renderApi();

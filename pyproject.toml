@@ -3,66 +3,41 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "god-ai"
-version = "1.1.1"
-description = "Confirmation-gated terminal assistant and Python SDK for self-healing, guarded code generation, structured parsing, multi-provider LLM routing, and autonomous pytest repair"
+name = "godai"
+version = "2.0.0"
+description = "Resilient AI tooling with decorators, coding analysis, provider resilience, and integrations"
 readme = "README.md"
 requires-python = ">=3.9"
-license = "MIT"
-authors = [{ name = "God AI Contributors" }]
+license = { text = "MIT" }
+authors = [{ name = "Ayush Giri" }]
 dependencies = [
   "rich>=13.7",
   "requests>=2.31",
   "python-dotenv>=1.0",
   "pydantic>=2.0",
+  "openai>=1.0",
+  "anthropic>=0.30",
+  "google-generativeai>=0.8",
+  "groq>=0.6",
+  "flask>=3.0",
+  "fastapi>=0.110",
+  "uvicorn>=0.29",
+  "pytest>=7.0",
 ]
-keywords = ["ai", "llm", "ollama", "automation", "developer-tools", "aura"]
+keywords = ["ai", "llm", "resilience", "developer-tools"]
 classifiers = [
   "Development Status :: 4 - Beta",
-  "Environment :: Console",
   "Intended Audience :: Developers",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
-  "Operating System :: OS Independent",
 ]
 
 [project.urls]
 Homepage = "https://github.com/ayushgiriai21-cmd/God"
 Repository = "https://github.com/ayushgiriai21-cmd/God"
-Issues = "https://github.com/ayushgiriai21-cmd/God/issues"
-
-[project.optional-dependencies]
-aura = [
-  "numpy>=1.24",
-  "torch>=2.0",
-  "tensorflow>=2.13; platform_machine != 'arm64' and python_version < '3.13'",
-  "flask>=3.0",
-  "fastapi>=0.110",
-  "uvicorn>=0.29",
-  "google-generativeai>=0.8",
-  "openai>=1.0",
-  "anthropic>=0.25",
-  "groq>=0.6",
-  "pandas>=2.0",
-]
-torch = ["numpy>=1.24", "torch>=2.0", "torchvision>=0.17"]
-web = ["fastapi>=0.110", "uvicorn>=0.29", "flask>=3.0"]
-cloud = ["openai>=1.0", "google-generativeai>=0.8", "anthropic>=0.25", "groq>=0.6"]
-examples = [
-  "numpy>=1.24",
-  "torch>=2.0",
-  "tensorflow>=2.13; platform_machine != 'arm64' and python_version < '3.13'",
-  "flask>=3.0",
-  "fastapi>=0.110",
-  "uvicorn>=0.29",
-  "pandas>=2.0",
-  "pytest>=7.0",
-]
 
 [project.scripts]
-god = "god_ai.cli:main"
-aura = "god_ai.cli:main"
+godai = "godai.apex:cli"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -70,9 +45,6 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.setuptools.package-data]
-god_ai = ["static/*.html", "static/*.png"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,5 +1,0 @@
-"""Public web-server API."""
-
-from .web import create_app, serve
-
-__all__ = ["create_app", "serve"]

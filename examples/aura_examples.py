@@ -4,7 +4,7 @@ import asyncio
 
 from pydantic import BaseModel
 
-from godai import aura
+from godaix import aura
 
 
 # 1. aura.heal - diagnoses a failure and retries it.
@@ -84,7 +84,7 @@ def dry_run_value() -> str:
 
 
 # 13. aura.audit - writes a call and success event to a JSON-lines file.
-@aura.audit(path="/tmp/godai-aura-example.jsonl")
+@aura.audit(path="/tmp/godaix-aura-example.jsonl")
 def audited_value() -> str:
     return "audited"
 

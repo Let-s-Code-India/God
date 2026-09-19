@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "godaix"
-version = "1.0.1"
+version = "1.0.2"
 description = "Resilient AI tooling with decorators, coding analysis, provider resilience, and integrations"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -33,11 +33,11 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ayushgiriai21-cmd/God"
-Repository = "https://github.com/ayushgiriai21-cmd/God"
+Homepage = "https://github.com/Let-s-Code-India/God"
+Repository = "https://github.com/Let-s-Code-India/God"
 
 [project.scripts]
-godai = "godai.apex:cli"
+godaix = "godaix.apex:cli"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

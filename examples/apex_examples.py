@@ -1,6 +1,6 @@
 """Offline, individually labeled examples for every Apex integration."""
 
-from godai import apex
+from godaix import apex
 
 
 class FakeApp:
@@ -53,7 +53,7 @@ def main() -> None:
     print("10. apex.on_prem:", apex.on_prem("http://localhost:8000"))
 
     # 11. apex.multi_tenant - adds and consumes one tenant quota unit.
-    tenants = apex.multi_tenant("/tmp/godai-tenants.json")
+    tenants = apex.multi_tenant("/tmp/godaix-tenants.json")
     tenants.add("team", "key", 2)
     print("11. apex.multi_tenant:", tenants.use("team"))
 

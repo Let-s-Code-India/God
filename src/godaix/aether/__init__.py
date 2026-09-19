@@ -13,7 +13,7 @@ from contextlib import ContextDecorator
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 
-from godai._core import LOGGER, SETTINGS
+from godaix._core import LOGGER, SETTINGS
 
 
 class timeout(ContextDecorator):
@@ -29,7 +29,7 @@ class timeout(ContextDecorator):
     def __exit__(self, exc_type, exc, tb):
         elapsed = time.monotonic() - self.started
         if elapsed > self.seconds and exc is None:
-            raise TimeoutError(f"godai operation exceeded {self.seconds}s")
+            raise TimeoutError(f"godaix operation exceeded {self.seconds}s")
         return False
 
     def __call__(self, function):
@@ -42,7 +42,7 @@ class timeout(ContextDecorator):
             except FutureTimeout as error:
                 future.cancel()
                 raise TimeoutError(
-                    f"godai operation exceeded {self.seconds}s"
+                    f"godaix operation exceeded {self.seconds}s"
                 ) from error
             finally:
                 executor.shutdown(wait=False, cancel_futures=True)
@@ -87,7 +87,7 @@ class circuit_breaker:
 class offline_queue:
     """Persist failed JSON requests in SQLite for later replay."""
 
-    def __init__(self, path: str = "godai-queue.sqlite3"):
+    def __init__(self, path: str = "godaix-queue.sqlite3"):
         self.path = path
         connection = sqlite3.connect(path)
         connection.execute(
@@ -165,7 +165,7 @@ def fallback_provider(providers: list[Callable[..., Any]], *args, **kwargs):
 
 def degraded_mode() -> bool:
     """Detect unavailable network and log a clear degraded-mode warning."""
-    host = os.getenv("GODAI_PROBE_HOST", "1.1.1.1")
+    host = os.getenv("GODAIX_PROBE_HOST", "1.1.1.1")
     port = 53
     timeout_seconds = 0.3
     # A short DNS-port probe avoids turning health reporting into a long wait.
@@ -181,7 +181,7 @@ def degraded_mode() -> bool:
         connection.close()
         return False
     except OSError:
-        LOGGER.warning("[godai] running in degraded/offline mode")
+        LOGGER.warning("[godaix] running in degraded/offline mode")
         return True
 
 
@@ -262,7 +262,7 @@ def missing_dependency_helper(package: str) -> None:
     except ImportError as error:
         command = f"python -m pip install {package_name}"
         raise ImportError(
-            f"godai needs {package_name!r}; install it with: {command}"
+            f"godaix needs {package_name!r}; install it with: {command}"
         ) from error
     # Successful imports intentionally produce no return value.
     # This explicit return documents the helper's None contract.
@@ -280,7 +280,7 @@ class cache_store:
 
     def __init__(
         self,
-        path: str = "godai-cache.json",
+        path: str = "godaix-cache.json",
         ttl: Optional[float] = None,
         max_items: int = 256,
     ):
@@ -363,7 +363,7 @@ def status() -> Dict[str, Any]:
 def rust_core(operation: str, values: list[int]) -> Any:
     """Use a future compiled extension when present, otherwise reference Python."""
     try:
-        from godai import _rust_core
+        from godaix import _rust_core
 
         # Prefer the compiled implementation whenever it is available.
         implementation = getattr(_rust_core, operation)

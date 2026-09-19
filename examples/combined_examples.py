@@ -1,11 +1,11 @@
-"""One coherent offline workflow that visits every public godai member."""
+"""One coherent offline workflow that visits every public godaix member."""
 
 import asyncio
 from pathlib import Path
 
 from pydantic import BaseModel
 
-from godai import aura, nexus, aether, apex
+from godaix import aura, nexus, aether, apex, aix
 
 
 class Record(BaseModel):
@@ -116,7 +116,7 @@ def run() -> None:
     print("12. aura.dry_run:", dry_step())
 
     # 13. aura.audit - records this workflow event locally.
-    @aura.audit(path="/tmp/godai-combined.jsonl")
+    @aura.audit(path="/tmp/godaix-combined.jsonl")
     def audit_step() -> str:
         return "audited"
 
@@ -193,7 +193,7 @@ def run() -> None:
     print("32. aether.circuit_breaker:", breaker.call(lambda: "closed"))
 
     # 33. aether.offline_queue - persists a workflow payload.
-    queue = aether.offline_queue("/tmp/godai-combined.sqlite3")
+    queue = aether.offline_queue("/tmp/godaix-combined.sqlite3")
     queue.put({"step": "queued"})
     print("33. aether.offline_queue:", queue.get_all())
 
@@ -219,7 +219,7 @@ def run() -> None:
     print("40. aether.missing_dependency_helper:", aether.missing_dependency_helper("json"))
 
     # 41. aether.cache_store - stores a workflow result on disk.
-    store = aether.cache_store("/tmp/godai-combined-cache.json")
+    store = aether.cache_store("/tmp/godaix-combined-cache.json")
     store.put("workflow", "cached")
     print("41. aether.cache_store:", store.get("workflow"))
 
@@ -271,7 +271,7 @@ def run() -> None:
     print("55. apex.on_prem:", apex.on_prem("http://localhost"))
 
     # 56. apex.multi_tenant - records one team usage unit.
-    tenants = apex.multi_tenant("/tmp/godai-combined-tenants.json")
+    tenants = apex.multi_tenant("/tmp/godaix-combined-tenants.json")
     tenants.add("team", "offline", 2)
     print("56. apex.multi_tenant:", tenants.use("team"))
 
@@ -285,10 +285,71 @@ def run() -> None:
     print("58. apex.metrics:", metrics.prometheus())
 
     # 59. apex.dashboard - renders the local audit history.
-    print("59. apex.dashboard:", apex.dashboard("/tmp/godai-combined.jsonl")[:80])
+    print("59. apex.dashboard:", apex.dashboard("/tmp/godaix-combined.jsonl")[:80])
 
     # 60. apex.docker_ready - validates an empty container requirement set.
     print("60. apex.docker_ready:", apex.docker_ready(()))
+
+    # 61. aix.fix - protects a block and executes only a successful local repair.
+    with aix.fix():
+        print("61. aix.fix: block protected")
+
+    # 62. aix.explain - diagnoses a block without changing it.
+    with aix.explain():
+        print("62. aix.explain: block diagnosed")
+
+    # 63. aix.snippet - scopes a source report to one block.
+    with aix.snippet():
+        print("63. aix.snippet: targeted block")
+
+    # 64. aix.diff - keeps a comparison local to the block.
+    with aix.diff():
+        print("64. aix.diff: no changes")
+
+    # 65. aix.file_patch - prints broader proposals only after failure.
+    with aix.file_patch():
+        print("65. aix.file_patch: no file changed")
+
+    # 66. aix.retry - bounds a transient operation.
+    with aix.retry(attempts=2, backoff=0):
+        print("66. aix.retry: completed")
+
+    # 67. aix.fallback - keeps a default available for block failures.
+    with aix.fallback(default="offline"):
+        print("67. aix.fallback: primary path")
+
+    # 68. aix.dry - previews side effects without applying them.
+    with aix.dry(side_effects=("write", "network")):
+        print("68. aix.dry: preview")
+
+    # 69. aix.sandbox - marks the calculation as restricted.
+    with aix.sandbox():
+        print("69. aix.sandbox: restricted calculation")
+
+    # 70. aix.guard - checks a standard-library prerequisite.
+    with aix.guard(packages=("json",)):
+        print("70. aix.guard: prerequisites passed")
+
+    # 71. aix.trace - records successful block timing.
+    with aix.trace():
+        print("71. aix.trace: event recorded")
+
+    # 72. aix.benchmark - measures a small local block.
+    with aix.benchmark():
+        print("72. aix.benchmark: measured")
+
+    # 73. aix.audit - uses a local audit destination.
+    with aix.audit(path="/tmp/godaix-combined-aix.log"):
+        print("73. aix.audit: event ready")
+
+    # 74. aix.rate_limit - allows one offline provider-shaped call.
+    with aix.rate_limit(interval=0):
+        print("74. aix.rate_limit: request allowed")
+
+    # 75. aix.repl - remains opt-in so automation never prompts.
+    if False:
+        with aix.repl():
+            print("75. aix.repl: interactive repair")
 
 
 if __name__ == "__main__":

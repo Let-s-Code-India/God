@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Type
 
-from godai._core import ProviderUnavailable, llm, redact
+from godaix._core import ProviderUnavailable, llm, redact
 
 
 def _ask(prompt: str) -> str:

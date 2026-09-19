@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from godai import nexus
+from godaix import nexus
 
 
 class Item(BaseModel):
@@ -16,7 +16,7 @@ def sample(value: int = 1) -> int:
 
 
 def main() -> None:
-    sample_path = "/tmp/godai-nexus-sample.py"
+    sample_path = "/tmp/godaix-nexus-sample.py"
     Path(sample_path).write_text("import os\nvalue = 1\n", encoding="utf-8")
 
     # 1. nexus.explain - diagnoses a common exception without network access.

@@ -1,6 +1,6 @@
 """Offline, individually labeled examples for every Aether feature."""
 
-from godai import aether
+from godaix import aether
 
 
 @aether.timeout(1)
@@ -22,7 +22,7 @@ def main() -> None:
     print("2. aether.circuit_breaker:", breaker.call(lambda: "ok"))
 
     # 3. aether.offline_queue - stores a JSON payload in SQLite.
-    pending = aether.offline_queue("/tmp/godai-queue.sqlite3")
+    pending = aether.offline_queue("/tmp/godaix-queue.sqlite3")
     pending.put({"prompt": "retry"})
     print("3. aether.offline_queue:", pending.get_all())
 
@@ -48,7 +48,7 @@ def main() -> None:
     print("10. aether.missing_dependency_helper:", aether.missing_dependency_helper("json"))
 
     # 11. aether.cache_store - persists and retrieves a bounded cache value.
-    store = aether.cache_store("/tmp/godai-cache.json")
+    store = aether.cache_store("/tmp/godaix-cache.json")
     key = store.key("x", ValueError("bad"))
     store.put(key, "fixed")
     print("11. aether.cache_store:", store.get(key))

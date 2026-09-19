@@ -1,28 +1,29 @@
-# godai
+# godaix
 
 > Resilient AI tooling for healing Python calls, understanding code, surviving bad networks, and shipping developer integrations.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ayushgiriai21-cmd/God/main/assets/logo.png" alt="godai logo" width="180">
+  <img src="https://raw.githubusercontent.com/Let-s-Code-India/God/main/assets/logo.png" alt="godaix logo" width="180">
 </p>
 
 <p align="center">
   <a href="https://pypi.org/project/godaix/"><img src="https://img.shields.io/pypi/v/godaix.svg" alt="PyPI version"></a>
-  <a href="https://github.com/ayushgiriai21-cmd/God/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ayushgiriai21-cmd/God.svg" alt="MIT license"></a>
+  <a href="https://github.com/Let-s-Code-India/God/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Let-s-Code-India/God.svg" alt="MIT license"></a>
   <img src="https://img.shields.io/pypi/pyversions/godaix.svg" alt="Python versions">
-  <a href="https://github.com/ayushgiriai21-cmd/God/actions"><img src="https://img.shields.io/github/actions/workflow/status/ayushgiriai21-cmd/God/publish.yml?label=Publish" alt="Publish status"></a>
+  <a href="https://github.com/Let-s-Code-India/God/actions"><img src="https://img.shields.io/github/actions/workflow/status/Let-s-Code-India/God/publish.yml?label=Publish" alt="Publish status"></a>
 </p>
 
-`godai` is one installable package with four deliberately independent sub-libraries. Importing the root stays cheap: `aura`, `nexus`, `aether`, and `apex` load lazily on first access.
+`godaix` is one installable package with five deliberately independent sub-libraries. Importing the root stays cheap: `aura`, `nexus`, `aether`, `apex`, and `aix` load lazily on first access.
 
-## What is godai?
+## What is godaix?
 
 - **Aura** provides decorators for healing, retrying, validating, tracing, caching, sandboxing, auditing, and rate-limiting Python calls.
 - **Nexus** provides direct coding functions for explanation, structured parsing, project agents, reviews, test generation, refactoring, complexity, and security analysis.
 - **Aether** provides resilience primitives for timeouts, circuits, offline queues, fallback providers, health checks, persistent caches, and degraded operation.
-- **Apex** connects godai to pytest, pre-commit, GitHub Actions, web frameworks, CLI workflows, dashboards, metrics, tenants, and on-premise deployments.
+- **Apex** connects godaix to pytest, pre-commit, GitHub Actions, web frameworks, CLI workflows, dashboards, metrics, tenants, and on-premise deployments.
+- **Aix** provides fifteen context managers for block-level fixes, diagnosis, retries, dry runs, sandboxing, tracing, auditing, and rate limiting.
 
-The package is authored by **Ayush Giri**. The verified repository is [github.com/ayushgiriai21-cmd/God](https://github.com/ayushgiriai21-cmd/God). No separate project website URL is configured in the repository metadata; the static documentation site lives in [`docs/`](docs/).
+The package is authored by **Ayush Giri**. The verified repository is [github.com/Let-s-Code-India/God](https://github.com/Let-s-Code-India/God). No separate project website URL is configured in the repository metadata; the static documentation site lives in [`docs/`](docs/).
 
 ## Dependencies
 
@@ -128,7 +129,7 @@ wheel. If you must retry the build, make the build tools explicit first:
 
 ```bash
 python -m pip install --upgrade pip setuptools wheel
-python -m pip install godai
+python -m pip install godaix
 ```
 
 Termux package maintainers sometimes ship Rust-backed extensions as separate
@@ -141,11 +142,11 @@ reliable; the Ubuntu `proot-distro` route above remains the supported setup.
 
 ### Missing provider or system dependency
 
-Provider SDKs are installed by default, but an environment can still have a broken or incomplete installation. godai’s dependency helper raises a clear `ImportError` naming the exact command, such as `python -m pip install torch`, rather than hiding the problem behind a raw traceback. Install the named package in the active virtual environment and retry.
+Provider SDKs are installed by default, but an environment can still have a broken or incomplete installation. godaix’s dependency helper raises a clear `ImportError` naming the exact command, such as `python -m pip install torch`, rather than hiding the problem behind a raw traceback. Install the named package in the active virtual environment and retry.
 
 ## Examples
 
-Run examples from the repository root, inside an activated environment where godai is installed:
+Run examples from the repository root, inside an activated environment where godaix is installed:
 
 ```bash
 python3 examples/aura_examples.py
@@ -155,12 +156,12 @@ python3 examples/apex_examples.py
 python3 examples/combined_examples.py
 ```
 
-All five files use offline or local paths and run without an API key. The combined workflow touches all 60 public members.
+All six tier-two and tier-three files use offline or local paths and run without an API key. The combined workflow touches all 75 public members.
 
 ## Quick Start
 
 ```python
-from godai import aura, nexus, aether, apex
+from godaix import aura, nexus, aether, apex
 
 @aura.trace
 @aura.heal(retries=1)
@@ -247,7 +248,7 @@ Every public member is listed below. The static site in [`docs/`](docs/) expands
 | `django_middleware` | Captures and diagnoses unhandled Django exceptions with guarded imports. |
 | `flask_middleware` | Registers a Flask exception diagnosis handler. |
 | `fastapi_middleware` | Adds FastAPI middleware that observes unhandled failures. |
-| `cli` | Provides `godai fix`, `godai explain`, and `godai agent` commands. |
+| `cli` | Provides `godaix fix`, `godaix explain`, and `godaix agent` commands. |
 | `vscode_extension` | Serves a documented local JSON-RPC-style editor endpoint. |
 | `redact` | Removes likely secrets and PII before code leaves the process. |
 | `on_prem` | Describes self-hosted OpenAI-compatible endpoint configuration. |
@@ -263,33 +264,33 @@ Set the provider and its credential before making an online call. `offline` and 
 
 | Provider | Environment variables |
 | --- | --- |
-| Anthropic Claude | `GODAI_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=...` |
-| OpenAI GPT | `GODAI_PROVIDER=openai`, `OPENAI_API_KEY=...` |
-| Google Gemini | `GODAI_PROVIDER=gemini`, `GOOGLE_API_KEY=...` |
-| Groq | `GODAI_PROVIDER=groq`, `GROQ_API_KEY=...` |
-| xAI Grok | `GODAI_PROVIDER=xai`, `XAI_API_KEY=...` |
-| Ollama | `GODAI_PROVIDER=ollama`, `OLLAMA_BASE_URL=http://localhost:11434` |
-| Qwen | `GODAI_PROVIDER=qwen`, `DASHSCOPE_API_KEY=...` |
-| OpenRouter | `GODAI_PROVIDER=openrouter`, `OPENROUTER_API_KEY=...` |
-| Generic OpenAI-compatible | `GODAI_PROVIDER=openai_compatible`, `GODAI_BASE_URL=https://host/v1`, `GODAI_API_KEY=...` |
+| Anthropic Claude | `GODAIX_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=...` |
+| OpenAI GPT | `GODAIX_PROVIDER=openai`, `OPENAI_API_KEY=...` |
+| Google Gemini | `GODAIX_PROVIDER=gemini`, `GOOGLE_API_KEY=...` |
+| Groq | `GODAIX_PROVIDER=groq`, `GROQ_API_KEY=...` |
+| xAI Grok | `GODAIX_PROVIDER=xai`, `XAI_API_KEY=...` |
+| Ollama | `GODAIX_PROVIDER=ollama`, `OLLAMA_BASE_URL=http://localhost:11434` |
+| Qwen | `GODAIX_PROVIDER=qwen`, `DASHSCOPE_API_KEY=...` |
+| OpenRouter | `GODAIX_PROVIDER=openrouter`, `OPENROUTER_API_KEY=...` |
+| Generic OpenAI-compatible | `GODAIX_PROVIDER=openai_compatible`, `GODAIX_BASE_URL=https://host/v1`, `GODAIX_API_KEY=...` |
 
 For the provider-specific cloud entries, set the provider-specific key shown
-above. The low-level OpenAI-compatible transport sends `GODAI_API_KEY` as its
+above. The low-level OpenAI-compatible transport sends `GODAIX_API_KEY` as its
 Bearer token, so set that shared variable as well when using `openai`, `groq`,
 `xai`, `qwen`, or `openrouter` with the built-in HTTP transport.
 
-Optional model and resilience settings use `GODAI_MODEL`, `GODAI_TIMEOUT`, `GODAI_RETRIES`, `GODAI_CIRCUIT_THRESHOLD`, and `GODAI_CACHE_TTL`.
+Optional model and resilience settings use `GODAIX_MODEL`, `GODAIX_TIMEOUT`, `GODAIX_RETRIES`, `GODAIX_CIRCUIT_THRESHOLD`, and `GODAIX_CACHE_TTL`.
 
 ## License
 
-godai is released under the [MIT License](LICENSE).
+godaix is released under the [MIT License](LICENSE).
 
 ## Contributing
 
-Open an issue or pull request on [ayushgiriai21-cmd/God](https://github.com/ayushgiriai21-cmd/God). Keep changes focused, add or update runnable examples for public behavior, and run the offline example suite before requesting review.
+Open an issue or pull request on [Let-s-Code-India/God](https://github.com/Let-s-Code-India/God). Keep changes focused, add or update runnable examples for public behavior, and run the offline example suite before requesting review.
 
 ## About the Author
 
-**Ayush Giri** · GitHub: [@ayushgiriai21-cmd](https://github.com/ayushgiriai21-cmd) · Repository: [github.com/ayushgiriai21-cmd/God](https://github.com/ayushgiriai21-cmd/God)
+**Ayush Giri** · GitHub: [@ayushgiriai21-cmd](https://github.com/ayushgiriai21-cmd) · Repository: [github.com/Let-s-Code-India/God](https://github.com/Let-s-Code-India/God)
 
 The repository does not currently declare a separate project website URL. The local documentation website is available from [`docs/index.html`](docs/index.html).

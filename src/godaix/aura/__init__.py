@@ -9,7 +9,7 @@ import time
 from collections import OrderedDict
 from typing import Any, Callable, Dict, Optional, TypeVar
 
-from godai._core import LOGGER, json_line, llm, validate_source
+from godaix._core import LOGGER, json_line, llm, validate_source
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -64,7 +64,7 @@ def patch(*, provider: Optional[str] = None) -> Callable[[F], F]:
                     tree = validate_source(suggestion)
                     namespace: Dict[str, Any] = {}
                     builtins_namespace = {"__builtins__": __builtins__}
-                    exec(compile(tree, "<godai-patch>", "exec"), builtins_namespace, namespace)
+                    exec(compile(tree, "<godaix-patch>", "exec"), builtins_namespace, namespace)
                     repaired = namespace.get(function.__name__)
                     if not callable(repaired):
                         raise ValueError("patched source did not define the function")
@@ -291,7 +291,7 @@ def guard(*, env: tuple[str, ...] = (), packages: tuple[str, ...] = ()) -> Calla
                 except ImportError:
                     missing.append(f"pip install {package}")
             if missing:
-                message = "godai guard blocked call; missing: " + ", ".join(missing)
+                message = "godaix guard blocked call; missing: " + ", ".join(missing)
                 raise RuntimeError(message)
             return function(*args, **kwargs)
 
@@ -322,7 +322,7 @@ def dry_run(*, side_effects: tuple[str, ...] = ("open", "system")) -> Callable[[
     return decorate
 
 
-def audit(*, path: str = "godai-audit.jsonl") -> Callable[[F], F]:
+def audit(*, path: str = "godaix-audit.jsonl") -> Callable[[F], F]:
     """Write calls, failures, and successful results to a JSON-lines audit log."""
 
     def decorate(function: F) -> F:
@@ -383,7 +383,7 @@ def rate_limit(*, rate: float = 1.0, capacity: int = 1) -> Callable[[F], F]:
             tokens = min(capacity, tokens + elapsed * rate)
             last = now
             if tokens < 1:
-                raise RuntimeError("godai rate limit exceeded")
+                raise RuntimeError("godaix rate limit exceeded")
             tokens -= 1
             return function(*args, **kwargs)
 

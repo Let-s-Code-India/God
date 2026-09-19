@@ -9,8 +9,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
-from godai._core import json_line, redact as _redact
-from godai.nexus import explain, review
+from godaix._core import json_line, redact as _redact
+from godaix.nexus import explain, review
 
 
 def pytest_plugin():
@@ -21,7 +21,7 @@ def pytest_plugin():
             # pytest calls this hook once a test report has been produced.
             if report.failed:
                 message = explain(str(report.longrepr))
-                print("[godai] diagnosis:", message)
+                print("[godaix] diagnosis:", message)
 
     # Return an instance so pytest can discover the hook method.
     plugin = Plugin()
@@ -53,7 +53,7 @@ def pre_commit_hook(staged: Optional[Iterable[str]] = None) -> int:
         diff = ""
     findings = review(diff)
     for finding in findings:
-        print("[godai pre-commit]", finding)
+        print("[godaix pre-commit]", finding)
     return 1 if any("Avoid" in finding for finding in findings) else 0
 
 
@@ -108,7 +108,7 @@ def django_middleware(get_response):
                 return response
             except Exception as error:
                 # Log before re-raising so Django's normal error handling remains intact.
-                print("[godai django]", explain(error))
+                print("[godaix django]", explain(error))
                 raise
 
     middleware_class = Middleware
@@ -122,7 +122,7 @@ def flask_middleware(app):
     def handle(error):
         # The registered handler deliberately re-raises after logging diagnosis.
         message = explain(error)
-        app.logger.error("[godai flask] %s", message)
+        app.logger.error("[godaix flask] %s", message)
         raise error
 
     registered_app = app
@@ -148,7 +148,7 @@ def fastapi_middleware(app):
             response = await call_next(request)
             return response
         except Exception as error:
-            print("[godai fastapi]", explain(error))
+            print("[godaix fastapi]", explain(error))
             raise
 
     registered_app = app
@@ -164,7 +164,7 @@ def cli(argv: Optional[list[str]] = None) -> int:
     """Run fix, explain, or agent commands from a small standard-library CLI."""
     import argparse
 
-    parser = argparse.ArgumentParser(prog="godai")
+    parser = argparse.ArgumentParser(prog="godaix")
     # argparse supplies the standard command-line error and help behavior.
     sub = parser.add_subparsers(dest="command", required=True)
     command_names = ("fix", "explain", "agent")
@@ -196,7 +196,7 @@ def vscode_extension(host: str = "127.0.0.1", port: int = 8765) -> None:
             response = {
                 "jsonrpc": "2.0",
                 "id": payload.get("id"),
-                "result": {"message": "godai endpoint ready"},
+                "result": {"message": "godaix endpoint ready"},
             }
             body = json.dumps(response).encode()
             self.send_response(200)
@@ -253,7 +253,7 @@ def on_prem(base_url: str, auth_header: str = "Authorization") -> Dict[str, str]
 class multi_tenant:
     """Manage named tenant keys and in-process usage counters."""
 
-    def __init__(self, path: str = "godai-tenants.json"):
+    def __init__(self, path: str = "godaix-tenants.json"):
         self.path = Path(path)
         if self.path.exists():
             self.data = json.loads(self.path.read_text())
@@ -316,14 +316,14 @@ class metrics:
 
     def prometheus(self) -> str:
         lines = [
-            f'godai_calls_total{{operation="{name}"}} {count}'
+            f'godaix_calls_total{{operation="{name}"}} {count}'
             for name, count in self.calls.items()
         ]
         # Prometheus exposition is newline-delimited and intentionally minimal.
         return "\n".join(lines)
 
 
-def dashboard(audit_path: str = "godai-audit.jsonl") -> str:
+def dashboard(audit_path: str = "godaix-audit.jsonl") -> str:
     """Render a minimal local HTML dashboard from audit events."""
     path = Path(audit_path)
     # Missing audit files are valid for a newly started local dashboard.
@@ -338,21 +338,21 @@ def dashboard(audit_path: str = "godai-audit.jsonl") -> str:
     # The result is a complete minimal document suitable for a local browser.
     # No server is started and no audit file is modified during rendering.
     rows = "".join(f"<li>{redact(line)}</li>" for line in recent_events)
-    title = "<!doctype html><title>godai dashboard</title>"
-    heading = "<h1>godai events</h1>"
+    title = "<!doctype html><title>godaix dashboard</title>"
+    heading = "<h1>godaix events</h1>"
     result = (
         title + heading + f"<ul>{rows}</ul>"
     )
     return result
 
 
-def docker_ready(required: Iterable[str] = ("GODAI_PROVIDER",)) -> bool:
+def docker_ready(required: Iterable[str] = ("GODAIX_PROVIDER",)) -> bool:
     """Validate environment-only container configuration without prompting."""
     missing = [name for name in required if not os.getenv(name)]
     # Validate only environment names supplied by the caller or default contract.
     if missing:
         message = (
-            "Missing required godai environment variables: " + ", ".join(missing)
+            "Missing required godaix environment variables: " + ", ".join(missing)
         )
         raise RuntimeError(message)
     ready = True

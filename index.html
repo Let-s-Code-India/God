@@ -6,16 +6,16 @@
   <meta name="description" content="godaix documentation: resilient AI tooling for Python.">
   <title>godaix | Python documentation</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/favicon_64x64.png">
 </head>
 <body>
   <header class="mobile-bar">
-    <a class="brand" href="#top"><img src="../assets/logo.svg" alt="godaix logo"><span>godaix<small>PYTHON TOOLKIT</small></span></a>
+    <a class="brand" href="#top"><img src="assets/logo.svg" alt="godaix logo" width="40" height="40"><span>godaix<small>PYTHON TOOLKIT</small></span></a>
     <button class="icon-button" id="menu-toggle" aria-label="Open navigation">☰</button>
   </header>
   <div class="site-shell" id="top">
     <aside class="sidebar" id="sidebar">
-      <a class="brand desktop-brand" href="#top"><img src="../assets/logo.svg" alt="godaix logo"><span>godaix<small>PYTHON TOOLKIT</small></span></a>
-      <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search docs" aria-label="Search documentation"></label>
+      <a class="brand desktop-brand" href="#top"><img src="assets/logo.svg" alt="godaix logo" width="40" height="40"><span>godaix<small>PYTHON TOOLKIT</small></span></a>
       <nav aria-label="Documentation navigation">
         <p class="nav-label">Explore</p>
         <a href="#overview">Overview</a><a href="#getting-started">Getting Started</a><a href="#installation">Installation</a><a href="#providers">LLM Providers</a>
@@ -29,7 +29,7 @@
     <main>
       <section class="hero" id="overview">
         <div class="hero-copy"><p class="kicker">RESILIENT AI TOOLING FOR PYTHON</p><h1>Build systems that<br><em>keep their footing.</em></h1><p class="hero-text">Decorators that heal calls. Analysis that understands code. Resilience primitives for rough networks. Integrations that meet teams where they work.</p><div class="hero-actions"><a class="button button-dark" href="#getting-started">Start building <span>→</span></a><a class="text-link" href="https://github.com/Let-s-Code-India/God">View source ↗</a></div></div>
-        <div class="orbit-art" aria-label="Illustration of the godaix libraries"><div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div><div class="orbit-dot dot-one"></div><div class="orbit-dot dot-two"></div><img class="core-logo" src="../assets/logo.svg" alt="godaix logo"><div class="orbit-label label-aura">aura</div><div class="orbit-label label-nexus">nexus</div><div class="orbit-label label-aether">aether</div><div class="orbit-label label-apex">apex</div><div class="orbit-label label-aix">aix</div></div>
+        <div class="orbit-art" aria-label="Illustration of the godaix libraries"><div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div><div class="orbit-dot dot-one"></div><div class="orbit-dot dot-two"></div><img class="core-logo" src="assets/logo.svg" alt="godaix logo" width="180" height="180"><div class="orbit-label label-aura">aura</div><div class="orbit-label label-nexus">nexus</div><div class="orbit-label label-aether">aether</div><div class="orbit-label label-apex">apex</div><div class="orbit-label label-aix">aix</div></div>
       </section>
       <section class="intro-grid" id="getting-started"><div><p class="kicker">FIRST RUN</p><h2>A small surface area.<br>A lot of leverage.</h2></div><div><p>Import only the library you need, or bring the whole toolkit into one workflow. Every public member has an offline-friendly example so you can explore before adding a provider key.</p><div class="quick-code"><button class="copy-button" data-copy="from godaix import aura, nexus, aether, apex">Copy</button><pre><code>from godaix import aura, nexus, aether, apex
 
@@ -53,7 +53,7 @@ pip install godaix</code></pre></article></div></section>
 export OPENAI_API_KEY="your-key"
 export GODAIX_MODEL="gpt-4o-mini"
 export GODAIX_TIMEOUT=20</code></pre></div></section>
-      <section class="content-section api-section" id="api-reference"><div class="section-heading api-heading"><div><p class="kicker">API REFERENCE</p><h2>Five libraries, seventy-five entry points.</h2><p>Search by member name or concept. Each card is grounded in the source docstring and includes a small usage example.</p></div><span class="api-count">75 MEMBERS</span></div><div id="api-list" class="api-groups"></div><p id="no-results" class="no-results" hidden>No members match that search.</p></section>
+      <section class="content-section api-section" id="api-reference"><div class="section-heading api-heading"><div><p class="kicker">API REFERENCE</p><h2>Five libraries, seventy-five entry points.</h2><p>Search by member name or concept. Each card is grounded in the source docstring and includes a small usage example.</p></div><span class="api-count">75 MEMBERS</span></div><div id="api-list" class="api-groups"></div><p id="no-results" class="no-results" hidden>No members match that search.</p><label class="search-box api-search"><span>⌕</span><input id="search-input" type="search" placeholder="Search docs" aria-label="Search documentation"></label></section>
       <section class="content-section troubleshooting" id="troubleshooting"><div class="section-heading"><p class="kicker">TROUBLESHOOTING</p><h2>When the environment gets in the way.</h2><p>These are installation issues observed with this dependency stack and the practical route around each one.</p></div><div class="trouble-grid"><article><h3>Termux: pydantic-core / Rust</h3><p>Android wheels may be unavailable, so pip falls back to a Rust and maturin build and reports unsupported architecture or missing cargo.</p><pre><code>pkg install proot-distro
 proot-distro install ubuntu
 proot-distro login ubuntu
@@ -63,7 +63,7 @@ pip install godaix</code></pre></article><article><h3>iSH and iPadOS terminals</
 source .venv/bin/activate
 python -m pip install godaix</code></pre><p>Keep the distribution marker intact. <code>--break-system-packages</code> is a last resort.</p></article><article><h3>Alpine, musl, or no wheel</h3><p>musl-based systems, emulated CPUs, and unusual Python versions can force native builds for pydantic-core. Upgrade pip, use CPython 3.10+, and prefer glibc-based Ubuntu with a matching wheel.</p><pre><code>python -m pip install --upgrade pip setuptools wheel
 python -m pip install godaix</code></pre></article><article><h3>TLS or certificate failures</h3><p><code>SSLCertVerificationError</code> usually means the OS or corporate proxy lacks a trusted CA. Update CA certificates or configure the organization’s CA bundle. Do not disable TLS verification.</p></article><article><h3>Dependency resolution conflicts</h3><p>Start from a fresh virtual environment, upgrade pip, and inspect the first conflicting requirement. Avoid mixing global packages into the install.</p></article></div></section>
-      <section class="content-section about" id="about"><img class="about-logo" src="../assets/logo.svg" alt="godaix logo"><div><p class="kicker">ABOUT THE PROJECT</p><h2>Built by Ayush Giri.</h2><p>godaix is an MIT-licensed open-source project for developers who want useful AI helpers without giving reliability away.</p><div class="about-links"><a href="https://github.com/Let-s-Code-India/God">Repository ↗</a><a href="../README.md">License and contribution guide ↗</a></div></div></section>
+      <section class="content-section about" id="about"><img class="about-logo" src="assets/logo.svg" alt="godaix logo" width="145" height="145"><div><p class="kicker">ABOUT THE PROJECT</p><h2>Built by Ayush Giri.</h2><p>godaix is an MIT-licensed open-source project for developers who want useful AI helpers without giving reliability away.</p><div class="about-links"><a href="https://github.com/Let-s-Code-India/God">Repository ↗</a><a href="README.md">License and contribution guide ↗</a></div></div></section>
       <footer><span>© Ayush Giri · godaix</span><span>MIT License · <a href="https://github.com/Let-s-Code-India/God">GitHub</a></span></footer>
     </main>
   </div>

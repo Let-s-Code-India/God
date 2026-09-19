@@ -23,7 +23,7 @@
 - **Apex** connects godaix to pytest, pre-commit, GitHub Actions, web frameworks, CLI workflows, dashboards, metrics, tenants, and on-premise deployments.
 - **Aix** provides fifteen context managers for block-level fixes, diagnosis, retries, dry runs, sandboxing, tracing, auditing, and rate limiting.
 
-The package is authored by **Ayush Giri**. The verified repository is [github.com/Let-s-Code-India/God](https://github.com/Let-s-Code-India/God). No separate project website URL is configured in the repository metadata; the static documentation site lives in [`docs/`](docs/).
+The package is authored by **Ayush Giri**. The verified repository is [github.com/Let-s-Code-India/God](https://github.com/Let-s-Code-India/God). No separate project website URL is configured in the repository metadata; the static documentation site is served from the repository root.
 
 ## Dependencies
 
@@ -176,9 +176,11 @@ print(apex.redact("api_key=do-not-send-this"))
 
 ## API Reference
 
-Every public member is listed below. The static site in [`docs/`](docs/) expands each entry with an executable example taken from the repository’s example files.
+Every public member is listed below. The static site in [`index.html`](index.html) expands each entry with an executable example taken from the repository’s example files.
 
 ### Aura
+
+Aura wraps individual Python calls with healing and operational controls. Use it at the function boundary when a call needs retries, validation, tracing, caching, or a controlled fallback. It complements Nexus's analysis, Aether's system-level resilience, Apex's integrations, and Aix's block-level tools.
 
 | Member | Description |
 | --- | --- |
@@ -200,6 +202,8 @@ Every public member is listed below. The static site in [`docs/`](docs/) expands
 
 ### Nexus
 
+Nexus provides direct analysis functions for understanding code and failures. Use it when you need a diagnosis, review, schema-shaped parse, test scaffold, or offline code insight without decorating the original call. It supplies the reasoning layer that Aura, Aether, Apex, and Aix can use in their workflows.
+
 | Member | Description |
 | --- | --- |
 | `explain` | Produces a plain-English diagnosis for an exception or traceback. |
@@ -219,6 +223,8 @@ Every public member is listed below. The static site in [`docs/`](docs/) expands
 | `ask` | Answers a question scoped to supplied code context. |
 
 ### Aether
+
+Aether handles the conditions around a call: deadlines, circuits, queues, provider fallback, health, and bounded caches. Use it when network or provider reliability matters beyond a single function invocation. It gives Aura and Aix dependable primitives while Apex connects those controls to applications and operations.
 
 | Member | Description |
 | --- | --- |
@@ -240,6 +246,8 @@ Every public member is listed below. The static site in [`docs/`](docs/) expands
 
 ### Apex
 
+Apex connects the toolkit to the places teams already work, including pytest, pre-commit, GitHub Actions, web frameworks, CLIs, dashboards, metrics, and tenant boundaries. Use it at the application or delivery edge rather than inside a single business function. It turns Aura, Nexus, Aether, and Aix capabilities into team-facing workflows.
+
 | Member | Description |
 | --- | --- |
 | `pytest_plugin` | Returns a pytest hook plugin that diagnoses failed tests. |
@@ -257,6 +265,28 @@ Every public member is listed below. The static site in [`docs/`](docs/) expands
 | `metrics` | Produces Prometheus-compatible call counters. |
 | `dashboard` | Renders an HTML history view from audit events. |
 | `docker_ready` | Validates required environment variables without prompting. |
+
+### Aix
+
+Aix applies diagnosis and control to a failing block of code through context managers. Use it when the smallest useful unit is a block whose source, locals, repair, retry, or side effects need to be captured together. It complements Aura's function decorators, Nexus's direct analysis, Aether's resilience primitives, and Apex's operational integrations.
+
+| Member | Description |
+| --- | --- |
+| `fix` | Diagnoses, repairs, validates, executes, and prints only the failed block. |
+| `explain` | Prints a plain-English diagnosis for a failed block without generating code. |
+| `snippet` | Prints the failing line range and a minimal targeted source patch. |
+| `diff` | Shows a unified diff between the original and repaired block. |
+| `file_patch` | Prints a full proposed file when a repair needs code outside the block. |
+| `retry` | Retries transient block failures with configurable exponential backoff. |
+| `fallback` | Provides a default value after a block fails. |
+| `dry` | Describes and intercepts side-effecting operations for a safe dry run. |
+| `sandbox` | Runs a block with a restricted execution context. |
+| `guard` | Checks environment variables and packages before entering a block. |
+| `trace` | Logs timing and the failing frame for a block. |
+| `benchmark` | Measures the execution time of an arbitrary block. |
+| `audit` | Appends block exceptions and source locations to an audit log. |
+| `rate_limit` | Throttles repeated provider calls made by a block. |
+| `repl` | Offers an interactive, backed-up source-file application after showing a fix. |
 
 ## Supported LLM Providers
 
@@ -293,4 +323,4 @@ Open an issue or pull request on [Let-s-Code-India/God](https://github.com/Let-s
 
 **Ayush Giri** · GitHub: [@ayushgiriai21-cmd](https://github.com/ayushgiriai21-cmd) · Repository: [github.com/Let-s-Code-India/God](https://github.com/Let-s-Code-India/God)
 
-The repository does not currently declare a separate project website URL. The local documentation website is available from [`docs/index.html`](docs/index.html).
+The repository does not currently declare a separate project website URL. The local documentation website is available from [`index.html`](index.html).

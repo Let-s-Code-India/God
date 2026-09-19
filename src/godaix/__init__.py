@@ -2,7 +2,7 @@
 
 from importlib import import_module
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __all__ = ["aura", "nexus", "aether", "apex", "aix"]
 
 def __getattr__(name: str):

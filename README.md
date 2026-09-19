@@ -294,20 +294,19 @@ Set the provider and its credential before making an online call. `offline` and 
 
 | Provider | Environment variables |
 | --- | --- |
-| Anthropic Claude | `GODAIX_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=...` |
-| OpenAI GPT | `GODAIX_PROVIDER=openai`, `OPENAI_API_KEY=...` |
-| Google Gemini | `GODAIX_PROVIDER=gemini`, `GOOGLE_API_KEY=...` |
-| Groq | `GODAIX_PROVIDER=groq`, `GROQ_API_KEY=...` |
-| xAI Grok | `GODAIX_PROVIDER=xai`, `XAI_API_KEY=...` |
+| Anthropic Claude | `GODAIX_PROVIDER=anthropic`, `GODAIX_API_KEY=...` |
+| OpenAI GPT | `GODAIX_PROVIDER=openai`, `GODAIX_API_KEY=...` |
+| Google Gemini | `GODAIX_PROVIDER=gemini`, `GODAIX_API_KEY=...` |
+| Groq | `GODAIX_PROVIDER=groq`, `GODAIX_API_KEY=...` |
+| xAI Grok | `GODAIX_PROVIDER=xai`, `GODAIX_API_KEY=...` |
 | Ollama | `GODAIX_PROVIDER=ollama`, `OLLAMA_BASE_URL=http://localhost:11434` |
-| Qwen | `GODAIX_PROVIDER=qwen`, `DASHSCOPE_API_KEY=...` |
-| OpenRouter | `GODAIX_PROVIDER=openrouter`, `OPENROUTER_API_KEY=...` |
+| Qwen | `GODAIX_PROVIDER=qwen`, `GODAIX_API_KEY=...` |
+| OpenRouter | `GODAIX_PROVIDER=openrouter`, `GODAIX_API_KEY=...` |
 | Generic OpenAI-compatible | `GODAIX_PROVIDER=openai_compatible`, `GODAIX_BASE_URL=https://host/v1`, `GODAIX_API_KEY=...` |
 
-For the provider-specific cloud entries, set the provider-specific key shown
-above. The low-level OpenAI-compatible transport sends `GODAIX_API_KEY` as its
-Bearer token, so set that shared variable as well when using `openai`, `groq`,
-`xai`, `qwen`, or `openrouter` with the built-in HTTP transport.
+Set `GODAIX_API_KEY` for every hosted provider. `GOOGLE_API_KEY` and the older
+provider-specific key names remain accepted as compatibility fallbacks when the
+shared variable is absent.
 
 Optional model and resilience settings use `GODAIX_MODEL`, `GODAIX_TIMEOUT`, `GODAIX_RETRIES`, `GODAIX_CIRCUIT_THRESHOLD`, and `GODAIX_CACHE_TTL`.
 

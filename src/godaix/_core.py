@@ -29,6 +29,38 @@ class Settings:
 
 SETTINGS = Settings()
 
+_LEGACY_API_KEYS = {
+    "openai": "OPENAI_API_KEY",
+    "anthropic": "ANTHROPIC_API_KEY",
+    "gemini": "GOOGLE_API_KEY",
+    "groq": "GROQ_API_KEY",
+    "xai": "XAI_API_KEY",
+    "qwen": "DASHSCOPE_API_KEY",
+    "openrouter": "OPENROUTER_API_KEY",
+}
+
+_DEFAULT_MODELS = {
+    "ollama": "llama3",
+    "anthropic": "claude-3-haiku-20240307",
+    "gemini": "gemini-pro",
+    "openai": "default",
+    "groq": "default",
+    "xai": "default",
+    "qwen": "default",
+    "openrouter": "default",
+    "openai_compatible": "default",
+}
+
+
+def _provider_api_key(provider: str) -> str:
+    """Resolve the shared key first, then a legacy provider-specific alias."""
+    return os.getenv("GODAIX_API_KEY") or os.getenv(_LEGACY_API_KEYS.get(provider, ""), "")
+
+
+def _provider_model(provider: str) -> str:
+    """Use the configured model before the provider's compatibility default."""
+    return os.getenv("GODAIX_MODEL") or _DEFAULT_MODELS.get(provider, "default")
+
 def redact(text: str) -> str:
     """Remove common credentials and personal identifiers before transport."""
     patterns = [
@@ -50,9 +82,8 @@ def llm(prompt: str, *, provider: Optional[str] = None, timeout: Optional[float]
     safe_prompt = redact(prompt)
     if chosen in {"offline", "local"}:
         return "Offline analysis: inspect the failing input, validate assumptions, and retry only transient work."
-    key_names = {"openai": "OPENAI_API_KEY", "anthropic": "ANTHROPIC_API_KEY", "gemini": "GOOGLE_API_KEY", "groq": "GROQ_API_KEY", "xai": "XAI_API_KEY", "qwen": "DASHSCOPE_API_KEY", "openrouter": "OPENROUTER_API_KEY", "ollama": "OLLAMA_BASE_URL"}
-    if not os.getenv(key_names.get(chosen, "GODAIX_API_KEY")):
-        raise ProviderUnavailable(f"No credentials configured for {chosen}. Set {key_names.get(chosen, 'GODAIX_API_KEY')} to use this provider.")
+    if chosen != "ollama" and not _provider_api_key(chosen):
+        raise ProviderUnavailable(f"No credentials configured for {chosen}. Set GODAIX_API_KEY to use this provider.")
     from godaix.aether import circuit_breaker, timeout as bounded_timeout
     request = lambda: _provider_request(chosen, safe_prompt, timeout or SETTINGS.timeout)
     return circuit_breaker(chosen).call(bounded_timeout(timeout or SETTINGS.timeout)(request))
@@ -63,19 +94,20 @@ def _provider_request(provider: str, prompt: str, timeout: float) -> str:
     base = os.getenv("GODAIX_BASE_URL", "")
     if provider == "ollama":
         base = base or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        response = requests.post(base.rstrip("/") + "/api/generate", json={"model": os.getenv("GODAIX_MODEL", "llama3"), "prompt": prompt, "stream": False}, timeout=timeout)
+        response = requests.post(base.rstrip("/") + "/api/generate", json={"model": _provider_model(provider), "prompt": prompt, "stream": False}, timeout=timeout)
         response.raise_for_status()
         return str(response.json().get("response", ""))
     if provider == "anthropic":
-        response = requests.post(os.getenv("GODAIX_BASE_URL", "https://api.anthropic.com/v1/messages"), json={"model": os.getenv("GODAIX_MODEL", "claude-3-haiku-20240307"), "max_tokens": 1024, "messages": [{"role": "user", "content": prompt}]}, headers={"x-api-key": os.getenv("ANTHROPIC_API_KEY", ""), "anthropic-version": "2023-06-01"}, timeout=timeout)
+        response = requests.post(os.getenv("GODAIX_BASE_URL", "https://api.anthropic.com/v1/messages"), json={"model": _provider_model(provider), "max_tokens": 1024, "messages": [{"role": "user", "content": prompt}]}, headers={"x-api-key": _provider_api_key(provider), "anthropic-version": "2023-06-01"}, timeout=timeout)
         response.raise_for_status(); return str(response.json()["content"][0]["text"])
     if provider == "gemini":
-        endpoint = os.getenv("GODAIX_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent")
-        response = requests.post(endpoint, params={"key": os.getenv("GOOGLE_API_KEY", "")}, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=timeout)
+        base = os.getenv("GODAIX_BASE_URL", "https://generativelanguage.googleapis.com/v1beta").rstrip("/")
+        endpoint = f"{base}/models/{_provider_model(provider)}:generateContent"
+        response = requests.post(endpoint, params={"key": _provider_api_key(provider)}, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=timeout)
         response.raise_for_status(); return str(response.json()["candidates"][0]["content"]["parts"][0]["text"])
     if provider in {"openai", "groq", "xai", "qwen", "openrouter", "openai_compatible"}:
         endpoint = base or os.getenv("GODAIX_BASE_URL", "https://api.openai.com/v1")
-        response = requests.post(endpoint.rstrip("/") + "/chat/completions", json={"model": os.getenv("GODAIX_MODEL", "default"), "messages": [{"role": "user", "content": prompt}]}, headers={"Authorization": f"Bearer {os.getenv('GODAIX_API_KEY', '')}"}, timeout=timeout)
+        response = requests.post(endpoint.rstrip("/") + "/chat/completions", json={"model": _provider_model(provider), "messages": [{"role": "user", "content": prompt}]}, headers={"Authorization": f"Bearer {_provider_api_key(provider)}"}, timeout=timeout)
         response.raise_for_status()
         return str(response.json()["choices"][0]["message"]["content"])
     raise ProviderUnavailable(f"Provider {provider!r} is not configured with a transport.")

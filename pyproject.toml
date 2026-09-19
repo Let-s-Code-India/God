@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "godaix"
-version = "1.0.3"
+version = "1.0.4"
 description = "Resilient AI tooling with decorators, coding analysis, provider resilience, and integrations"
 readme = "README.md"
 requires-python = ">=3.9"
